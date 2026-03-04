@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block title %}Student Register{% endblock %}
+{% block content %}
+<div class="register-page">
+
+    <div class="register-card shadow-lg">
+        <div class="card-header text-center">
+            <h2>Register as Student</h2>
+            <p>Join us and create your student profile</p>
+        </div>
+
+        <div class="card-body">
+            <form action="/student_register" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="role" value="student">
+
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-6 pr-md-3">
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-person me-2"></i>Full Name</label>
+                            <input type="text" class="form-control" name="full_name" placeholder="Enter full name" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-envelope me-2"></i>Email</label>
+                            <input type="email" class="form-control" name="email" placeholder="Enter email" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-telephone me-2"></i>Phone</label>
+                            <input type="tel" class="form-control" name="phone" placeholder="Enter phone number" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-card-heading me-2"></i>Roll Number</label>
+                            <input type="text" class="form-control" name="roll_number" placeholder="e.g. 22CS1045" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-book me-2"></i>Course</label>
+                            <input type="text" class="form-control" name="course" placeholder="Enter course" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-building me-2"></i>Branch</label>
+                            <input type="text" class="form-control" name="branch" placeholder="Enter branch" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-calendar me-2"></i>Graduation Year</label>
+                            <input type="number" class="form-control" name="graduation_year" min="2000" max="2100" placeholder="e.g. 2026" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-calculator me-2"></i>CGPA</label>
+                            <input type="number" step="0.01" class="form-control" name="cgpa" placeholder="Enter CGPA">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-file-earmark-text me-2"></i>Resume Upload</label>
+                            <input type="file" class="form-control" name="resume_filename">
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-md-6 pl-md-3">
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-calendar2 me-2"></i>Date of Birth</label>
+                            <input type="date" class="form-control" name="dob">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-geo-alt me-2"></i>Address</label>
+                            <textarea class="form-control" name="address" rows="3" placeholder="Enter full address"></textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-lightning me-2"></i>Skills</label>
+                            <textarea class="form-control" name="skills" rows="5" placeholder="Enter skills separated by commas"></textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-lock me-2"></i>Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-mailbox me-2"></i>Tenth Marks (%)</label>
+                            <input type="number" step="0.01" class="form-control" name="tenth_marks" placeholder="Enter marks">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-mailbox me-2"></i>Twelfth Marks (%)</label>
+                            <input type="number" step="0.01" class="form-control" name="twelfth_marks" placeholder="Enter marks">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label><i class="bi bi-calendar me-2"></i>Year (Current Academic Year)</label>
+                            <input type="number" class="form-control" name="year" placeholder="Enter current year">
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Register Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn register-btn">
+                        Register <i class="bi bi-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-3">
+                Already registered? <a href="/login">Sign in</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

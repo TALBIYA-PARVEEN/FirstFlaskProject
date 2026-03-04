@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Placement Drive{% endblock %}
+
+{% block content %}
+<h2>Create New Placement Drive</h2>
+<a href="{{ url_for('company.dashboard') }}" class="btn btn-secondary mb-3">Back to Dashboard</a>
+
+<div class="card">
+  <div class="card-body">
+    <form method="POST">
+      <!-- Job Title -->
+      <div class="mb-3">
+        <label for="title" class="form-label">Job Title *</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+      </div>
+      
+      <!-- Job Description -->
+      <div class="mb-3">
+        <label for="description" class="form-label">Job Description *</label>
+        <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+      </div>
+      
+      <!-- Eligibility -->
+      <div class="mb-3">
+        <label for="eligibility_criteria" class="form-label">Eligibility Criteria</label>
+        <input type="text" class="form-control" id="eligibility_criteria" name="eligibility_criteria" placeholder="e.g., Minimum CGPA 7.0, CS/IT students only">
+      </div>
+      
+      <!-- Application Deadline -->
+      <div class="mb-3">
+        <label for="application_deadline" class="form-label">Application Deadline *</label>
+        <input type="date" class="form-control" id="application_deadline" name="application_deadline" required>
+      </div>
+      
+      <div class="alert alert-info">
+        <strong>Note:</strong> Your placement drive will be submitted for admin approval. It will be visible to students once approved.
+      </div>
+      
+      <button type="submit" class="btn btn-success">Create Drive</button>
+      <a href="{{ url_for('company.dashboard') }}" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

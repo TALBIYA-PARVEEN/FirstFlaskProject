@@ -1,0 +1,236 @@
+{# {% extends 'base.html' %}
+{% block title %}Comapany Register{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+
+            <div class="card shadow">
+                <div class="card-body">
+
+                    <form action="/company_register" method="POST">
+                        <input type="hidden" name="role" id="role" value="company">
+
+                        <div class="form-group">
+                            <label for="company_name">Company Name</label>
+                            <input type="text" class="form-control" name="company_name" placeholder="Enter company name"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Company Email</label>
+                            <input type="email" class="form-control" name="email" placeholder="Enter company email"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="industry">Industry</label>
+                            <input type="text" class="form-control" name="industry"
+                                placeholder="Enter your company's Industry" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address_line">Street Address</label>
+                            <input type="text" class="form-control" name="address_line"
+                                placeholder="Street address, building, etc." required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" class="form-control" name="city" placeholder="City" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="state">State/Province</label>
+                            <input type="text" class="form-control" name="state" placeholder="State or Province"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="postal_code">Postal Code</label>
+                            <input type="text" class="form-control" name="postal_code" placeholder="ZIP or Postal Code"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <input type="text" class="form-control" name="country" placeholder="Country" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact_person">Contact Person</label>
+                            <input type="text" class="form-control" name="contact_person"
+                                placeholder="Enter contact person name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone"> Contact Phone</label>
+                            <input type="tel" class="form-control" name="phone" placeholder="Enter contact number"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="website">Company Website</label>
+                            <input type="url" class="form-control" name="website" placeholder="Enter company website "
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="Enter password"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Company Description</label>
+                            <textarea class="form-control" name="description" id="description" rows="4"
+                                placeholder="Describe your company briefly..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                Register
+                            </button>
+                        </div>
+                    </form>
+
+                    <div>
+                        <p class="text-center mt-3">
+                            Already sign in !
+                            <a href="/login">sign up</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %} #}
+
+
+
+
+
+
+
+{% extends 'base.html' %}
+{% block title %}Company Register{% endblock %}
+{% block content %}
+
+<!-- Full page background -->
+<div class="register-page">
+
+    <div class="register-card shadow-lg">
+        <div class="card-header text-center">
+            <h2>Register Your Company</h2>
+            <p>Join us and create your company profile</p>
+        </div>
+
+        <div class="card-body">
+            <form action="/company_register" method="POST">
+                <input type="hidden" name="role" value="company">
+
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-6 pr-md-3">
+                        <div class="form-group">
+                            <label><i class="bi bi-building me-2"></i>Company Name</label>
+                            <input type="text" class="form-control" name="company_name" placeholder="Enter company name"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="bi bi-envelope me-2"></i>Email</label>
+                            <input type="email" class="form-control" name="email" placeholder="Enter company email"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="bi bi-briefcase me-2"></i>Industry</label>
+                            <input type="text" class="form-control" name="industry" placeholder="Enter industry"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="bi bi-geo-alt me-2"></i>Street Address</label>
+                            <input type="text" class="form-control" name="address_line"
+                                placeholder="Street, building, etc." required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="bi bi-geo-alt-fill me-2"></i>City</label>
+                            <input type="text" class="form-control" name="city" placeholder="City" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="bi bi-pin-map me-2"></i>State/Province</label>
+                            <input type="text" class="form-control" name="state" placeholder="State or Province"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="bi bi-mailbox me-2"></i>Postal Code</label>
+                            <input type="text" class="form-control" name="postal_code" placeholder="ZIP or Postal Code"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-md-6 pl-md-3">
+                        <div class="form-group">
+                            <label><i class="bi bi-flag me-2"></i>Country</label>
+                            <input type="text" class="form-control" name="country" placeholder="Country" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="bi bi-person me-2"></i>Contact Person</label>
+                            <input type="text" class="form-control" name="contact_person" placeholder="Contact Person"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="bi bi-telephone me-2"></i>Phone</label>
+                            <input type="tel" class="form-control" name="phone" placeholder="Phone number" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="bi bi-globe me-2"></i>Website</label>
+                            <input type="url" class="form-control" name="website" placeholder="Company website"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="bi bi-lock me-2"></i>Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="Enter password"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="bi bi-card-text me-2"></i>Company Description</label>
+                            <textarea class="form-control" name="description" rows="4"
+                                placeholder="Briefly describe your company..." required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Register Button -->
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn register-btn">
+                            Register <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+            </form>
+
+            <div class="text-center mt-3">
+                Already registered? <a href="/login">Sign in</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+
