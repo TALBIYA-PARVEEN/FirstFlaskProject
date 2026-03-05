@@ -832,7 +832,7 @@ def company_register():
 
         try:
             db.session.commit()
-            flash("Registration successful. Await admin approval.", "success")
+            flash("Registration successful. Await admin approval.", "info")
             return redirect(url_for('auth.login'))
         except Exception as e:
             db.session.rollback()
