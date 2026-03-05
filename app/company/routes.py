@@ -356,7 +356,7 @@ def create_drive():
         db.session.add(drive)
         db.session.commit()
 
-        flash('Drive created successfully.', 'success')
+        flash('Drive created successfully.Await Admin Approval', 'info')
         return redirect(url_for('company.drives'))
 
     return render_template('company/create_drive.html')
