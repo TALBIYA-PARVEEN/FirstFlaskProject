@@ -3,7 +3,9 @@ import os
 class Config:
     
     SECRET_KEY = os.environ.get("SECRET_KEY", "iit_madras_mad1_project_development-secret-key")
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///careernest.db")
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+'sqlite:///' + os.path.join(basedir, 'db.sqlite3')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
