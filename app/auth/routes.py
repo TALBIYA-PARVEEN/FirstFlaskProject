@@ -650,29 +650,39 @@ def index():
 # =========================
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+
     if request.method == 'POST':
+
         email = request.form.get('email')
         password = request.form.get('password')
+        selected_role = request.form.get('role')   # 👈 role from tab
 
         user = User.query.filter_by(email=email).first()
 
         if user and user.check_password(password):
 
+            # 🚨 role mismatch check
+            if user.role != selected_role:
+                flash("Please login using the correct role tab.", "danger")
+                return redirect(url_for('auth.login'))
+
             if user.is_blacklisted:
                 flash("Your account has been blacklisted.", "danger")
                 return redirect(url_for('auth.login'))
 
-            if user.role in ['student', 'company'] and not user.is_approved:
+            if user.role in ['student','company'] and not user.is_approved:
                 flash("Your account is pending admin approval.", "warning")
                 return redirect(url_for('auth.login'))
 
             login_user(user)
 
-            # Role-based redirect
+            # Role redirect
             if user.role == 'student':
                 return redirect(url_for('student.dashboard'))
+
             elif user.role == 'company':
                 return redirect(url_for('company.dashboard'))
+
             elif user.role == 'admin':
                 return redirect(url_for('admin.dashboard'))
 
