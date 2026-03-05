@@ -231,8 +231,8 @@ def dashboard():
         return redirect(url_for('auth.logout'))
 
     total_apps = Application.query.filter_by(student_id=profile.user_id).count()
-    selected = Application.query.filter_by(student_id=profile.user_id, status='Selected').count()
-    pending = Application.query.filter_by(student_id=profile.user_id, status='Pending').count()
+    selected = Application.query.filter_by(student_id=profile.user_id, status='selected').count()
+    pending = Application.query.filter_by(student_id=profile.user_id, status='pending').count()
     
     
     # pending = Application.query.filter(Application.student_id==current_user.user_id,
@@ -379,12 +379,17 @@ def drives():
     today = date.today()
     profile = get_student_profile()
 
+    # drives = PlacementDrive.query.join(Company).filter(
+    #     and_(
+    #         PlacementDrive.status.in_(['Approved', 'Active']),
+    #         PlacementDrive.application_deadline >= today
+    #     )
+    # ).all()
+    
     drives = PlacementDrive.query.join(Company).filter(
-        and_(
-            PlacementDrive.status.in_(['Approved', 'Active']),
-            PlacementDrive.application_deadline >= today
-        )
-    ).all()
+    PlacementDrive.status == 'Approved',
+    PlacementDrive.application_deadline >= today
+).all()
 
     applied_drive_ids = [
         app.drive_id for app in
@@ -461,7 +466,7 @@ def apply_drive(drive_id):
 @role_required('student')
 def applications():
     profile = get_student_profile()
-    apps = Application.query.filter_by(student_id=current_user.user_id).all()
+    apps = Application.query.filter_by(student_id=current_user.user_id).order_by(Application.application_date.desc()).all()
     return render_template('student/applications.html', applications=apps)
 
 

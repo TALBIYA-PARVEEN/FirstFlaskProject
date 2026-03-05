@@ -1,85 +1,149 @@
 {% extends 'base.html' %}
 {% block title %}My Applications{% endblock %}
+
 {% block content %}
 
 <h2 class="mb-4">My Applications</h2>
 
-<!-- Summary Cards -->
+<!-- SUMMARY CARDS -->
 <div class="row g-3 mb-4">
-  {% set status_colors = {'Pending':'warning','Shortlisted':'info','Selected':'success','Rejected':'danger'} %}
-  {% set status_icons = {'Pending':'⏳','Shortlisted':'🔹','Selected':'✅','Rejected':'❌'} %}
-  {% for key, color in status_colors.items() %}
+
   <div class="col-md-3">
     <div class="card shadow-sm border-0 text-center">
       <div class="card-body">
-        <h6 class="text-uppercase">{{ key }}</h6>
+        <h6 class="text-uppercase">Pending</h6>
         <div class="display-6 fw-bold">
-          {{ applications|selectattr('status','equalto',key)|list|length }}
+          {{ applications | selectattr('status','equalto','pending') | list | length }}
         </div>
-        <div class="fs-3">{{ status_icons[key] }}</div>
+        <div class="fs-3">⏳</div>
       </div>
     </div>
   </div>
-  {% endfor %}
+
+  <div class="col-md-3">
+    <div class="card shadow-sm border-0 text-center">
+      <div class="card-body">
+        <h6 class="text-uppercase">Shortlisted</h6>
+        <div class="display-6 fw-bold">
+          {{ applications | selectattr('status','equalto','Shortlisted') | list | length }}
+        </div>
+        <div class="fs-3">🔹</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm border-0 text-center">
+      <div class="card-body">
+        <h6 class="text-uppercase">Selected</h6>
+        <div class="display-6 fw-bold">
+          {{ applications | selectattr('status','equalto','Selected') | list | length }}
+        </div>
+        <div class="fs-3">✅</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm border-0 text-center">
+      <div class="card-body">
+        <h6 class="text-uppercase">Rejected</h6>
+        <div class="display-6 fw-bold">
+          {{ applications | selectattr('status','equalto','Rejected') | list | length }}
+        </div>
+        <div class="fs-3">❌</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<!-- Applications Table -->
+
+<!-- APPLICATION TABLE -->
 <div class="table-responsive shadow-sm rounded">
-  <table class="table table-hover align-middle mb-0 bg-white">
-    <thead class="table-dark">
-      <tr>
-        <th>Drive Title</th>
-        <th>Company</th>
-        <th>Status</th>
-        <th>Applied On</th>
-        <th>Remarks</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for app in applications %}
-      <tr>
-        <td class="fw-bold">{{ app.drive.job_title if app.drive else 'N/A' }}</td>
-        <td>{{ app.drive.company.company_name if app.drive and app.drive.company else 'N/A' }}</td>
-        <td>
-          {% set status = app.status.capitalize() %}
-          {% if status == 'Selected' %}
-            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Selected</span>
-          {% elif status == 'Shortlisted' %}
-            <span class="badge bg-info text-dark"><i class="bi bi-star me-1"></i>Shortlisted</span>
-          {% elif status == 'Pending' %}
-            <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1"></i>Pending</span>
-          {% elif status == 'Rejected' %}
-            <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Rejected</span>
-          {% else %}
-            <span class="badge bg-secondary">{{ status }}</span>
-          {% endif %}
-        </td>
-        <td>{{ app.application_date.strftime('%d %b %Y') if app.application_date else 'N/A' }}</td>
-        <td>{{ app.remarks or '-' }}</td>
-        <td>
-          {% if status == 'Pending' %}
-          <form action="{{ url_for('student.withdraw_application', app_id=app.application_id) }}" method="POST">
-            <button type="submit" class="btn btn-outline-danger btn-sm"
-              onclick="return confirm('Withdraw this application?')">
-              <i class="bi bi-arrow-counterclockwise me-1"></i>Withdraw
-            </button>
-          </form>
-          {% else %}
-            <span class="text-muted">-</span>
-          {% endif %}
-        </td>
-      </tr>
-      {% else %}
-      <tr>
-        <td colspan="6" class="text-center py-4">
-          <i class="bi bi-inbox me-2"></i>No applications found.
-          <a href="{{ url_for('student.drives') }}" class="text-decoration-none">Browse drives</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<table class="table table-hover align-middle mb-0 bg-white">
+
+<thead class="table-dark">
+<tr>
+<th>Drive Title</th>
+<th>Company</th>
+<th>Status</th>
+<th>Applied On</th>
+<th>Remarks</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for app in applications %}
+<tr>
+
+<td class="fw-bold">
+{{ app.drive.job_title if app.drive else 'N/A' }}
+</td>
+
+<td>
+{{ app.drive.company.company_name if app.drive and app.drive.company else 'N/A' }}
+</td>
+
+<td>
+
+{% if app.status == 'Selected' %}
+<span class="badge bg-success">Selected</span>
+
+{% elif app.status == 'Shortlisted' %}
+<span class="badge bg-info text-dark">Shortlisted</span>
+
+{% elif app.status == 'pending' %}
+<span class="badge bg-warning text-dark">Pending</span>
+
+{% elif app.status == 'Rejected' %}
+<span class="badge bg-danger">Rejected</span>
+
+{% else %}
+<span class="badge bg-secondary">{{ app.status }}</span>
+
+{% endif %}
+
+</td>
+
+<td>
+{{ app.application_date.strftime('%d %b %Y') if app.application_date else 'N/A' }}
+</td>
+
+<td>
+{{ app.remarks or '-' }}
+</td>
+
+<td>
+
+{% if app.status == 'pending' %}
+<form action="{{ url_for('student.withdraw_application', app_id=app.application_id) }}" method="POST">
+<button type="submit" class="btn btn-outline-danger btn-sm"
+onclick="return confirm('Withdraw this application?')">
+Withdraw
+</button>
+</form>
+{% else %}
+<span class="text-muted">-</span>
+{% endif %}
+
+</td>
+
+</tr>
+
+{% else %}
+<tr>
+<td colspan="6" class="text-center py-4">
+No applications found.
+<a href="{{ url_for('student.drives') }}">Browse drives</a>
+</td>
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
 </div>
 
 {% endblock %}

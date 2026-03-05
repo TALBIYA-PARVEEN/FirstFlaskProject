@@ -4,63 +4,103 @@
 
 {% block content %}
 <h2>All Placement Drives</h2>
-<a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary mb-3">Back to Dashboard</a>
+
+<a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary mb-3">
+Back to Dashboard
+</a>
 
 {% if drives %}
 <table class="table table-striped">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Title</th>
-      <th>Company</th>
-      <th>Job Type</th>
-      <th>Package</th>
-      <th>Deadline</th>
-      <th>Status</th>
-      <th>Applications</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for drive in drives %}
-    <tr>
-      <td>{{ drive.id }}</td>
-      <td>{{ drive.title }}</td>
-      <td>{{ drive.company.company_name if drive.company else 'N/A' }}</td>
-      <td>{{ drive.job_type }}</td>
-      <td>{{ drive.package or 'N/A' }}</td>
-      <td>{{ drive.application_deadline.strftime('%Y-%m-%d') if drive.application_deadline else 'N/A' }}</td>
-      <td>
-        {% if not drive.is_approved %}
-          <span class="badge bg-warning">Pending Approval</span>
-        {% elif not drive.is_active %}
-          <span class="badge bg-secondary">Closed</span>
-        {% else %}
-          <span class="badge bg-success">Active</span>
-        {% endif %}
-      </td>
-      <td>{{ drive.applications|list|length }}</td>
-      <td>
-        {% if not drive.is_approved %}
-        <form action="{{ url_for('admin.approve_drive', drive_id=drive.drive_id) }}" method="POST" style="display:inline;">
-          <button type="submit" class="btn btn-sm btn-success">Approve</button>
-        </form>
-        <form action="{{ url_for('admin.reject_drive', drive_id=drive.drive_id) }}" method="POST" style="display:inline;">
-          <button type="submit" class="btn btn-sm btn-danger">Reject</button>
-        </form>
-        {% elif drive.is_active %}
-        <form action="{{ url_for('admin.close_drive', drive_id=drive.drive_id) }}" method="POST" style="display:inline;">
-          <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Close this drive?')">Close</button>
-        </form>
-        {% else %}
-          <span class="text-muted">Closed</span>
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Job Title</th>
+<th>Company</th>
+<th>Eligibility</th>
+<th>Deadline</th>
+<th>Status</th>
+<th>Applications</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody>
+{% for drive in drives %}
+<tr>
+
+<td>{{ drive.drive_id }}</td>
+
+<td>{{ drive.job_title }}</td>
+
+<td>
+{{ drive.company.company_name if drive.company else 'N/A' }}
+</td>
+
+<td>{{ drive.eligibility or 'N/A' }}</td>
+
+<td>
+{{ drive.application_deadline.strftime('%Y-%m-%d') if drive.application_deadline else 'N/A' }}
+</td>
+
+<td>
+  {% if drive.status == 'Pending' %}
+    <span class="badge bg-warning">Pending</span>
+
+  {% elif drive.status == 'Approved' %}
+    <span class="badge bg-success">Approved</span>
+
+  {% elif drive.status == 'Rejected' %}
+    <span class="badge bg-danger">Rejected</span>
+
+  {% elif drive.status == 'Closed' %}
+    <span class="badge bg-secondary">Closed</span>
+
+  {% else %}
+    <span class="badge bg-dark">{{ drive.status }}</span>
+  {% endif %}
+</td>
+
+<td>{{ drive.applications|length }}</td>
+
+<td>
+
+{% if drive.status == 'Pending' %}
+
+<form action="{{ url_for('admin.approve_drive', drive_id=drive.drive_id) }}" method="POST" style="display:inline;">
+<button class="btn btn-sm btn-success">
+Approve
+</button>
+</form>
+
+<form action="{{ url_for('admin.reject_drive', drive_id=drive.drive_id) }}" method="POST" style="display:inline;">
+<button class="btn btn-sm btn-danger">
+Reject
+</button>
+</form>
+
+{% elif drive.status == 'Approved' %}
+
+<form action="{{ url_for('admin.close_drive', drive_id=drive.drive_id) }}" method="POST" style="display:inline;">
+<button class="btn btn-sm btn-warning" onclick="return confirm('Close this drive?')">
+Close
+</button>
+</form>
+
 {% else %}
-<div class="alert alert-info">No placement drives found.</div>
+<span class="text-muted">Closed</span>
 {% endif %}
+
+</td>
+
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% else %}
+<div class="alert alert-info">
+No placement drives found.
+</div>
+{% endif %}
+
 {% endblock %}

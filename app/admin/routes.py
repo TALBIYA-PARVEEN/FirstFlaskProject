@@ -150,6 +150,21 @@ def reject_drive(drive_id):
     return redirect(url_for('admin.pending_drives'))
 
 
+@admin_bp.route('/drives/<int:drive_id>/close', methods=['POST'])
+@login_required
+@role_required('admin')
+def close_drive(drive_id):
+
+    drive = PlacementDrive.query.get_or_404(drive_id)
+
+    drive.status = "Closed"
+
+    db.session.commit()
+
+    flash("Drive closed", "warning")
+
+    return redirect(url_for('admin.drives'))
+
 # =========================
 # STUDENTS
 # =========================
@@ -222,15 +237,7 @@ def export_students():
                     headers={'Content-Disposition': 'attachment;filename=students.csv'})
     
     
-# =========================
-# APPLICATIONS
-# =========================
-@admin_bp.route('/applications')
-@login_required
-@role_required('admin')
-def applications():
-    applications = Application.query.all()
-    return render_template('admin/applications.html', applications=applications)
+
 
 
 
@@ -390,4 +397,49 @@ def export_companies():
         generate(),
         mimetype='text/csv',
         headers={"Content-Disposition": "attachment;filename=companies.csv"}
+    )
+    
+    
+
+
+
+# =========================
+# APPLICATIONS
+# =========================
+# @admin_bp.route('/applications')
+# @login_required
+# @role_required('admin')
+# def applications():
+#     applications = Application.query.all()
+#     return render_template('admin/applications.html', applications=applications)
+
+
+@admin_bp.route('/applications')
+@login_required
+@role_required('admin')
+def applications():
+
+    q = request.args.get('q', '')
+
+    query = Application.query
+
+    if q:
+        query = (
+            query
+            .join(Student)
+            .join(PlacementDrive)
+            .filter(
+                db.or_(
+                    Student.full_name.ilike(f"%{q}%"),
+                    PlacementDrive.title.ilike(f"%{q}%")
+                )
+            )
+        )
+
+    applications = query.order_by(Application.application_date.desc()).all()
+
+    return render_template(
+        "admin/applications.html",
+        applications=applications,
+        q=q
     )

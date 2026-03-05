@@ -786,14 +786,15 @@ def student_register():
 def company_register():
     if request.method == 'POST':
         # ----- Form Data -----
+        address = f"{request.form['address_line']}, {request.form['city']}, {request.form['state']}, {request.form['postal_code']}, {request.form['country']}"
         email = request.form.get('email')
         password = request.form.get('password')
         company_name = request.form.get('company_name')
         industry = request.form.get('industry')
-        location = request.form.get('location')
+        location = address
         website = request.form.get('website')
         contact_person = request.form.get('contact_person')
-        contact_phone = request.form.get('contact_phone')
+        contact_phone = request.form.get('phone')
         description = request.form.get('description')
 
         # ----- Check duplicates -----

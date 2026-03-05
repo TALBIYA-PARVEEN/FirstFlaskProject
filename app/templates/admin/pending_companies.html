@@ -20,10 +20,12 @@
   <tbody>
     {% for company in companies %}
     <tr>
-      <td>{{ company.company_profile.company_name if company.company_profile else 'N/A' }}</td>
+      <td><a href="{{ url_for('admin.company_detail', user_id=company.user_id) }}">{{
+          company.company.company_name if company.company else 'N/A' }}</a></td>
+
       <td>{{ company.email }}</td>
-      <td>{{ company.company_profile.industry if company.company_profile else 'N/A' }}</td>
-      <td>{{ company.company_profile.location if company.company_profile else 'N/A' }}</td>
+      <td>{{ company.company.industry if company.company else 'N/A' }}</td>
+      <td>{{ company.company.location if company.company else 'N/A' }}</td>
       <td>
         <form action="{{ url_for('admin.approve_company', user_id=company.user_id) }}" method="POST" style="display:inline;">
           <button type="submit" class="btn btn-success btn-sm">Approve</button>
