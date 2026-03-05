@@ -313,7 +313,9 @@ def edit_profile():
 @login_required
 @role_required('company')
 def create_drive():
+    print("create_drive route reached")
     profile = get_company_profile()
+    print("Profile:", profile)
     if not profile:
         flash('Profile not found.', 'danger')
         return redirect(url_for('company.dashboard'))
@@ -365,9 +367,16 @@ def create_drive():
 @login_required
 @role_required('company')
 def drives():
+    # company_profile = current_user.company  # or get_company_profile()
+    # drives = PlacementDrive.query.filter_by(company_id=company_profile.user_id).all()
+    # return render_template(
+    #     'company/drives.html',
+    #     drives=drives,
+    #     company_profile=company_profile
+    # )
     profile = get_company_profile()
     drives = PlacementDrive.query.filter_by(company_id=profile.user_id).all()
-    return render_template('company/drives.html', drives=drives)
+    return render_template('company/drives.html', drives=drives,profile=profile)
 
 
 # ---------------- EDIT DRIVE ----------------

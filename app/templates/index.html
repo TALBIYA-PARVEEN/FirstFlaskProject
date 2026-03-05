@@ -140,7 +140,7 @@ if(video){
     content.style.display = "block";
 }
 </script> -->
-<script>
+<!-- <script>
 const video = document.getElementById("intro-video");
 const content = document.getElementById("main-content");
 
@@ -159,6 +159,42 @@ if(video){
         video.style.display = "none";
         content.style.display = "block";
     }
+}else{
+    content.style.display = "block";
+}
+</script> -->
+
+<script>
+const video = document.getElementById("intro-video");
+const content = document.getElementById("main-content");
+
+if(video){
+
+    // check if video already played in this browser session
+    if(sessionStorage.getItem("introPlayed") === "true"){
+        video.style.display = "none";
+        content.style.display = "block";
+    } 
+    else{
+
+        video.style.display = "block";
+        content.style.display = "none";
+
+        video.onended = function(){
+            video.style.display = "none";
+            content.style.display = "block";
+
+            // mark video as played in this session
+            sessionStorage.setItem("introPlayed", "true");
+        };
+
+        video.onerror = function(){
+            video.style.display = "none";
+            content.style.display = "block";
+            sessionStorage.setItem("introPlayed", "true");
+        };
+    }
+
 }else{
     content.style.display = "block";
 }

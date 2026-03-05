@@ -6,131 +6,77 @@
 
 <h2>My Placement Drives</h2>
 
-<a href="{{ url_for('company.dashboard') }}" class="btn btn-secondary mb-3">
-Back to Dashboard
+<a href="{{ url_for('company.dashboard') }}" class="btn btn-secondary me-2 mb-3">
+    Back to Dashboard
 </a>
 
-
-{% if current_user.is_approved %}
-<a href="{{ url_for('company.create_drive') }}" class="btn btn-success mb-3">
-Create New Drive
-</a>
-
-{% endif %}
 
 {% if drives %}
 <table class="table table-striped">
-
-<thead>
-<tr>
-<th>Title</th>
-<th>Description</th>
-<th>Deadline</th>
-<th>Status</th>
-<th>Applications</th>
-<th>Actions</th>
-</tr>
-</thead>
-
-<tbody>
-
-{% for drive in drives %}
-
-<tr>
-
-<td>{{ drive.job_title }}</td>
-
-<td>{{ drive.eligibility or 'N/A' }}</td>
-
-<td>
-{{ drive.application_deadline.strftime('%Y-%m-%d') if drive.application_deadline else 'N/A' }}
-</td>
-
-<td>
-{% if drive.status == 'Pending' %}
-<span class="badge bg-warning">Pending</span>
-
-{% elif drive.status in ['Active','Approved'] %}
-<span class="badge bg-success">{{ drive.status }}</span>
-
-{% elif drive.status == 'Closed' %}
-<span class="badge bg-secondary">Closed</span>
-
-{% else %}
-<span class="badge bg-secondary">{{ drive.status }}</span>
-{% endif %}
-</td>
-
-<td>
-<a href="{{ url_for('company.drive_applications', drive_id=drive.drive_id) }}"
-class="btn btn-sm btn-outline-primary">
-View ({{ drive.applications|length }})
-</a>
-</td>
-
-<td>
-
-{% if drive.status in ['Active','Approved'] %}
-
-<a href="{{ url_for('company.edit_drive', drive_id=drive.drive_id) }}"
-class="btn btn-sm btn-warning">
-Edit
-</a>
-
-<form action="{{ url_for('company.close_drive', drive_id=drive.drive_id) }}"
-method="POST" style="display:inline;">
-
-<button type="submit" class="btn btn-sm btn-danger"
-onclick="return confirm('Close this drive?')">
-Close
-</button>
-
-</form>
-
-{% elif drive.status == 'Closed' %}
-
-<form action="{{ url_for('company.reopen_drive', drive_id=drive.drive_id) }}"
-method="POST" style="display:inline;">
-
-<button type="submit" class="btn btn-sm btn-success"
-onclick="return confirm('Reopen this drive?')">
-Reopen
-</button>
-
-</form>
-
-{% else %}
-
-<span class="text-muted">Pending Approval</span>
-
-{% endif %}
-
-</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Deadline</th>
+            <th>Status</th>
+            <th>Applications</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for drive in drives %}
+        <tr>
+            <td>{{ drive.job_title }}</td>
+            <td>{{ drive.eligibility or 'N/A' }}</td>
+            <td>{{ drive.application_deadline.strftime('%Y-%m-%d') if drive.application_deadline else 'N/A' }}</td>
+            <td>
+                {% if drive.status == 'Pending' %}
+                <span class="badge bg-warning">Pending</span>
+                {% elif drive.status in ['Active','Approved'] %}
+                <span class="badge bg-success">{{ drive.status }}</span>
+                {% elif drive.status == 'Closed' %}
+                <span class="badge bg-secondary">Closed</span>
+                {% else %}
+                <span class="badge bg-secondary">{{ drive.status }}</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('company.drive_applications', drive_id=drive.drive_id) }}"
+                    class="btn btn-sm btn-outline-primary">
+                    View ({{ drive.applications|length }})
+                </a>
+            </td>
+            <td>
+                {# Actions for each drive #}
+                {% if drive.status in ['Active','Approved'] %}
+                <a href="{{ url_for('company.edit_drive', drive_id=drive.drive_id) }}"
+                    class="btn btn-sm btn-warning">Edit</a>
+                <form action="{{ url_for('company.close_drive', drive_id=drive.drive_id) }}" method="POST"
+                    style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                        onclick="return confirm('Close this drive?')">Close</button>
+                </form>
+                {% elif drive.status == 'Closed' %}
+                <form action="{{ url_for('company.reopen_drive', drive_id=drive.drive_id) }}" method="POST"
+                    style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-success"
+                        onclick="return confirm('Reopen this drive?')">Reopen</button>
+                </form>
+                {% else %}
+                <span class="text-muted">Pending Approval</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
-
-{% else %}
-
-<div class="alert alert-info">
-
-No placement drives created yet.
-
-{% if current_user.is_approved %}
-<a href="{{ url_for('company.create_drive') }}">
-Create your first drive
+<a href="{{ url_for('company.create_drive') }}" class="btn btn-success mb-3">
+    Create New Drive
 </a>
 {% else %}
-Your company account is pending approval.
-{% endif %}
-
+<div class="alert alert-info">
+    No placement drives created yet.
 </div>
-
 {% endif %}
 
 {% endblock %}
