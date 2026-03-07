@@ -118,7 +118,115 @@
 {% extends 'base.html' %}
 {% block title %}Company Register{% endblock %}
 {% block content %}
+<style>
+    * Full-page gradient background */
+     html,body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: #f8f9fa;
+        /* white/light gray static background */
+    }
 
+    .register-page {
+        /* position: fixed; */
+        /* cover entire screen */
+        top: 10;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .register-card {
+        background: #ffffff;
+        /* white card */
+        border-radius: 25px;
+        padding: 30px 40px;
+        width: 100%;
+        max-width: 1100px;
+        /* card max width */
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
+        /* static shadow */
+    }
+
+    html,
+    body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        /* static white gradient full screen */
+    }
+
+    /* .register-page {
+    height: 100vh;       /* full viewport height */
+    /* width: 100vw;        full viewport width */
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
+    
+
+    .register-card {
+        background: #ffffff;
+        /* keep your card white */
+        border-radius: 25px;
+        padding: 30px 40px;
+        width: 100%;
+        max-width: 1100px;
+        /* keep original card width */
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
+        /* static shadow behind card */
+    }
+
+    */ .register-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Card header styling */
+    .register-card .card-header h2 {
+        font-weight: 700;
+        color: #1a202c;
+    }
+
+    .register-card .card-header p {
+        color: #4a5568;
+    }
+
+    /* Input fields styling */
+    .register-card .form-control {
+        border-radius: 20px;
+        padding: 12px 20px;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+    }
+
+    .register-card .form-control:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 8px rgba(78, 115, 223, 0.4);
+    }
+
+    /* Register button */
+    .register-page .register-btn {
+        background: linear-gradient(90deg, #4e73df, #1cc88a);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 12px 35px;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .register-btn:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+</style>
 <!-- Full page background -->
 <div class="register-page">
 
@@ -232,5 +340,3 @@
 
 
 {% endblock %}
-
-

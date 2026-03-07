@@ -1,12 +1,187 @@
 {% extends 'base.html' %}
 {% block title %}Company Dashboard{% endblock %}
+
 {% block content %}
+<style>
+/* Adjust text color inside cards */
+.card .card-title,
+.card .card-text {
+    color: #f9fafb; /* white text for dark card background */
+}
+
+/* Add spacing between buttons */
+.card .btn-group .btn {
+    margin-right: 0.5rem; /* small gap between buttons */
+}
+
+/* Ensure last button has no extra margin */
+.card .btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+/* Optional: increase padding of card body for readability */
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Buttons hover effect */
+.btn-primary:hover,
+.btn-success:hover,
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(67, 233, 123, 0.4);
+}
+
+
+
+</style>
+<style>
+/* Full-page dark dashboard style */
+body {
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at top, #1f2937 0%, #111827 100%);
+    color: #f9fafb;
+}
+
+/* Page heading */
+h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+}
+h2::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    margin: 0.5rem auto 0 auto;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #667eea, #43e97b);
+}
+
+/* Alert */
+.alert-warning {
+    border-radius: 10px;
+    background-color: #f59e0b33; /* slightly transparent for dark bg */
+    color: #fbbf24;
+    padding: 0.75rem 1rem;
+}
+
+/* Statistic Cards */
+.row.g-3 .card {
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    text-align: center;
+    padding: 1rem;
+    color: #fff;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.row.g-3 .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+.card .display-6 {
+    font-weight: 700;
+    font-size: 2.2rem;
+}
+
+/* Profile Card */
+.card.mb-3 {
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    background: #1f2937;
+}
+.card.mb-3 .btn-group .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.card.mb-3 .btn-group .btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(67,233,123,0.4);
+}
+
+/* Table styling */
+.table {
+    background-color: #1f2937;
+    border-radius: 10px;
+    overflow: hidden;
+    color: #f9fafb;
+}
+.table th, .table td {
+    vertical-align: middle;
+}
+.table-hover tbody tr:hover {
+    background-color: rgba(255,255,255,0.08);
+}
+.badge {
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.45em 0.65em;
+    border-radius: 8px;
+}
+.badge.bg-success { background-color: #10b981 !important; }
+.badge.bg-warning { background-color: #f59e0b !important; }
+.badge.bg-secondary { background-color: #6b7280 !important; }
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #43e97b);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(67,233,123,0.4);
+}
+.btn-success {
+    background: linear-gradient(135deg, #43e97b, #10b981);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+}
+.btn-outline-primary {
+    border-color: #667eea;
+    color: #667eea;
+    font-weight: 500;
+}
+.btn-outline-primary:hover {
+    background-color: #667eea;
+    color: #fff;
+}
+.btn-outline-secondary {
+    border-color: #6b7280;
+    color: #6b7280;
+}
+.btn-outline-secondary:hover {
+    background-color: #6b7280;
+    color: #fff;
+}
+
+/* Page background effects */
+body::before,
+body::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.15;
+    z-index: 0;
+}
+body::before { width: 600px; height: 600px; background: #667eea; top: 5%; left: -10%; }
+body::after { width: 700px; height: 700px; background: #43e97b; bottom: 5%; right: -15%; }
+</style>
+
 <h2>Company Dashboard</h2>
 
 {% if not current_user.is_approved %}
 <div class="alert alert-warning">
-  <strong>Pending Approval:</strong> Your company account is awaiting admin approval. You cannot create drives until
-  approved.
+  <strong>Pending Approval:</strong> Your company account is awaiting admin approval. You cannot create drives until approved.
 </div>
 {% endif %}
 
@@ -70,7 +245,7 @@
     <h5>Recent Drives</h5>
   </div>
   <div class="card-body">
-    <table class="table table-sm">
+    <table class="table table-hover table-sm">
       <thead>
         <tr>
           <th>Title</th>
@@ -94,7 +269,7 @@
           </td>
           <td>{{ drive.application_deadline.strftime('%Y-%m-%d') if drive.application_deadline else 'N/A' }}</td>
           <td>
-            <a href="{{ url_for('company.drive_applications', drive_id=drive.drive_id) }}">
+            <a href="{{ url_for('company.drive_applications', drive_id=drive.drive_id) }}" class="btn btn-sm btn-outline-primary">
               {{ drive.applications|list|length }} applications
             </a>
           </td>
@@ -103,9 +278,10 @@
       </tbody>
     </table>
     {% if drives|length > 5 %}
-    <a href="{{ url_for('company.drives') }}" class="btn btn-outline-primary btn-sm">View All Drives</a>
+    <a href="{{ url_for('company.drives') }}" class="btn btn-outline-primary btn-sm mt-3">View All Drives</a>
     {% endif %}
   </div>
 </div>
 {% endif %}
+
 {% endblock %}

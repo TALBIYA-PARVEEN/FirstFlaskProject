@@ -1,8 +1,110 @@
-{% extends 'base.html' %}
-
-{% block title %}My Drives{% endblock %}
-
 {% block content %}
+<style>
+/* Page Heading */
+h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+h2::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    margin: 0.5rem auto 1rem auto;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #667eea, #43e97b);
+}
+
+/* Buttons */
+.btn-secondary, .btn-warning, .btn-danger, .btn-success {
+    font-weight: 500;
+    border-radius: 6px;
+}
+.btn-secondary:hover {
+    background-color: #4b5563;
+}
+.btn-success {
+    background: linear-gradient(135deg, #10b981, #43e97b);
+    color: #fff;
+    border: none;
+}
+.btn-success:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(67, 233, 123, 0.3);
+}
+.btn-warning {
+    background-color: #f59e0b;
+    color: #fff;
+    border: none;
+}
+.btn-warning:hover {
+    opacity: 0.85;
+}
+.btn-danger {
+    background-color: #ef4444;
+    color: #fff;
+    border: none;
+}
+.btn-danger:hover {
+    opacity: 0.85;
+}
+
+/* Table */
+.table {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+}
+.table th, .table td {
+    vertical-align: middle;
+    font-size: 0.95rem;
+}
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0,0,0,0.03);
+}
+
+/* Badges */
+.badge {
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.45em 0.65em;
+    border-radius: 8px;
+}
+.badge.bg-warning {
+    background-color: #f59e0b !important;
+    color: #fff;
+}
+.badge.bg-success {
+    background-color: #10b981 !important;
+    color: #fff;
+}
+.badge.bg-secondary {
+    background-color: #6b7280 !important;
+    color: #fff;
+}
+
+/* Alerts */
+.alert-info {
+    border-radius: 8px;
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .btn {
+        margin-top: 0.3rem;
+        margin-bottom: 0.3rem;
+    }
+}
+</style>
 
 <h2>My Placement Drives</h2>
 
@@ -10,8 +112,8 @@
     Back to Dashboard
 </a>
 
-
 {% if drives %}
+<div class="table-responsive">
 <table class="table table-striped">
     <thead>
         <tr>
@@ -47,7 +149,6 @@
                 </a>
             </td>
             <td>
-                {# Actions for each drive #}
                 {% if drive.status in ['Active','Approved'] %}
                 <a href="{{ url_for('company.edit_drive', drive_id=drive.drive_id) }}"
                     class="btn btn-sm btn-warning">Edit</a>
@@ -70,6 +171,8 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
+
 <a href="{{ url_for('company.create_drive') }}" class="btn btn-success mb-3">
     Create New Drive
 </a>

@@ -3,8 +3,111 @@
 {% block title %}Create Placement Drive{% endblock %}
 
 {% block content %}
+<style>
+/* Page Background */
+body {
+    background: #f3f4f6;
+    font-family: 'Inter', sans-serif;
+    color: #1f2937;
+}
+
+/* Page Heading */
+h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+h2::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    margin: 0.5rem auto 1rem auto;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #667eea, #43e97b);
+}
+
+/* Back Button */
+.btn-secondary {
+    background-color: #6b7280;
+    color: #fff;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+.btn-secondary:hover {
+    background-color: #4b5563;
+    color: #fff;
+}
+
+/* Card */
+.card {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+}
+
+/* Form Labels */
+.form-label {
+    font-weight: 600;
+    color: #374151;
+}
+
+/* Form Controls */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.2s;
+}
+.form-control:focus {
+    border-color: #43e97b;
+    box-shadow: 0 0 0 2px rgba(67,233,123,0.2);
+}
+
+/* Textarea */
+textarea.form-control {
+    resize: vertical;
+}
+
+/* Alert Box */
+.alert-info {
+    background: #e0f2fe;
+    color: #0369a1;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Buttons */
+.btn-success {
+    background: linear-gradient(135deg, #43e97b, #667eea);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-success:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(67, 233, 123, 0.5);
+}
+
+.btn-outline-secondary {
+    border-color: #6b7280;
+    color: #6b7280;
+    font-weight: 500;
+}
+.btn-outline-secondary:hover {
+    background-color: #6b7280;
+    color: #fff;
+}
+</style>
+
 <h2>Create New Placement Drive</h2>
-<!-- print("Create drive route reached") -->
 <a href="{{ url_for('company.dashboard') }}" class="btn btn-secondary mb-3">Back to Dashboard</a>
 
 <div class="card">

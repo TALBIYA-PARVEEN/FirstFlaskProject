@@ -1,3 +1,4 @@
+{#
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,7 +18,7 @@
         href="{{ url_for('static', filename='img/CareerNest Logo.png') }}">
     <style>
         body {
-            background: url('/static/img/background_page.png') no-repeat center center fixed;
+            background: url('/static/img/background.png') no-repeat center center fixed;
             background-size: cover;
             min-height: 100vh;
         }
@@ -133,12 +134,301 @@
             {% endblock %}
         </div>
     </div>
+</body>
+
+</html> #}
 
 
 
 
 
 
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CareerNest | Elevate Your Future{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #00b09b, #96c93d);
+            /* Matching your Green/Blue */
+            --accent-blue: #007bff;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: url("{{ url_for('static', filename='img/background.png') }}") no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: #2d3436;
+        }
+
+        /* Overlay to make content "pop" */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            /* Softens the background image */
+            z-index: -1;
+        }
+
+        /* --- CREATIVE NAV RIBBON --- */
+        .navbar-container {
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar-island {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 50px;
+            /* Pill shape */
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 10px 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin: 0 auto;
+            max-width: 95%;
+        }
+
+        .navbar-brand img {
+            height: 45px;
+            filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        /* Creative Underline Effect */
+        .nav-link {
+            font-weight: 600;
+            color: #1e3799 !important;
+            padding: 10px 15px !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #00b09b !important;
+            transform: translateY(-2px);
+        }
+
+        /* CREATIVE BUTTONS */
+        .btn-creative {
+            border-radius: 30px;
+            padding: 10px 24px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: none;
+            margin-left: 8px;
+        }
+
+        /* Student Register (Green Gradient) */
+        .btn-student {
+            background: var(--primary-gradient);
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Company Register (Outline Blue) */
+        .btn-company {
+            background: white;
+            color: #007bff !important;
+            border: 1px solid #007bff;
+        }
+
+        /* Login (Minimalist) */
+        :root {
+            /* Sampled from the deep and mid-blues of your background */
+            --blue-gradient: linear-gradient(135deg, #1e3799 0%, #1160a8 50%, #00b09b 100%);
+            --blue-glow: rgba(30, 55, 153, 0.4);
+        }
+
+        .btn-login {
+            background: var(--blue-gradient);
+            color: white !important;
+            font-weight: 700;
+            border: none;
+
+            /* THE ELLIPTICAL SECRET: 
+       A high px value creates the oval/elliptical look 
+    */
+            border-radius: 50px;
+
+            padding: 10px 30px;
+            /* Wider padding makes the ellipse look better */
+            box-shadow: 0 4px 15px var(--blue-glow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px var(--blue-glow);
+            filter: brightness(1.1);
+            color: white !important;
+        }
+
+        .btn-creative:hover {
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* CONTENT WRAPPER */
+        .page-content {
+            padding-top: 130px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 991px) {
+            .navbar-island {
+                border-radius: 20px;
+            }
+
+            .btn-creative {
+                margin: 5px 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="toast align-items-center border-0 shadow-lg" role="alert" style="border-radius: 15px;">
+            <div class="d-flex p-2">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                <div class="toast-body"><strong>{{ message }}</strong></div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <header class="navbar-container">
+        <nav class="navbar navbar-expand-lg navbar-island">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img src="{{ url_for('static', filename='img/CareerLogo.png') }}" alt="CareerNest">
+                </a>
+
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navMain">
+                    <span class="bi bi-list fs-1"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navMain">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        {% if current_user.is_authenticated %}
+                        {% if current_user.role == 'admin' %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.dashboard') }}">Dashboard
+                                Center</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.students') }}">Students</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.companies') }}">Companies</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.drives') }}">Drives</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.applications') }}">Applications</a>
+                        </li>
+                        {% elif current_user.role == 'company' %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('company.dashboard') }}">Overview</a>
+                        </li>
+                        
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('company.profile') }}">Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('company.drives') }}">Active
+                                Drives</a></li>
+                        {% elif current_user.role == 'student' %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('student.dashboard') }}">My Desk</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('student.profile') }}">Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('student.drives') }}">Find Jobs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('student.applications') }}">Applications</a>
+                        </li>
+                        {% endif %}
+                        {% else %}
+                        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                        <!-- <li class="nav-item"><a class="nav-link" href="#">About CareerNest</a></li> -->
+                        {% endif %}
+                    </ul>
+
+                    <div class="d-flex flex-column flex-lg-row align-items-center">
+                        {% if not current_user.is_authenticated %}
+                        <a href="{{ url_for('auth.student_register') }}" class="btn btn-creative btn-student">Student
+                            Join</a>
+                        <a href="{{ url_for('auth.company_register') }}" class="btn btn-creative btn-student">Company
+                            Join</a>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-creative btn-login">Login</a>
+                        {% else %}
+                        <span class="badge rounded-pill bg-light text-dark px-3 py-2 me-3 d-none d-lg-block">
+                            <i class="bi bi-person-circle me-1"></i> {{ current_user.role|upper }}
+                        </span>
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-creative btn-login">Sign Out</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container page-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-show toasts with a sleek slide-in effect
+        document.addEventListener("DOMContentLoaded", function () {
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+            var toastList = toastElList.map(function (toastEl) {
+                return new bootstrap.Toast(toastEl, { delay: 5000 })
+            });
+            toastList.forEach(toast => toast.show());
+        });
+    </script>
 </body>
 
 </html>

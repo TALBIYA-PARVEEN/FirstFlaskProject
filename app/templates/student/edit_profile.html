@@ -3,8 +3,125 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block content %}
+<style>
+/* Page background */
+body {
+    background: radial-gradient(circle at top, #1f2937 0%, #111827 100%);
+    color: #f9fafb;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+}
+body::before, body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.15;
+    z-index: 0;
+}
+body::before { width: 600px; height: 600px; background: #667eea; top: 5%; left: -10%; }
+body::after { width: 700px; height: 700px; background: #43e97b; bottom: 5%; right: -15%; }
+
+/* Section heading */
+h2.mb-4 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+h2.mb-4::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #43e97b);
+    border-radius: 2px;
+    margin: 0.5rem auto 0 auto;
+}
+
+/* Back button */
+.btn-secondary {
+    background: linear-gradient(135deg, #6b7280, #9ca3af);
+    color: #fff;
+    font-weight: 600;
+}
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #9ca3af, #6b7280);
+}
+
+/* Card styling */
+.card {
+    border: none;
+    border-radius: 15px;
+    background: #1f2937;
+    color: #f9fafb;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+.card-body {
+    padding: 2rem;
+}
+
+/* Form inputs */
+.form-label {
+    font-weight: 600;
+}
+.form-control, .form-select, textarea {
+    border-radius: 10px;
+    background-color: rgba(255,255,255,0.05);
+    color: #f9fafb;
+    border: 1px solid #4b5563;
+}
+.form-control::placeholder,
+textarea::placeholder {
+    color: #9ca3af;
+}
+.form-control:focus, .form-select:focus, textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25);
+    background-color: rgba(255,255,255,0.08);
+    color: #f9fafb;
+}
+
+/* Section headers inside form */
+h5.mb-3.text-primary {
+    color: #667eea;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 5px;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #43e97b);
+    color: #fff;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, #43e97b, #667eea);
+    transform: scale(1.05);
+}
+.btn-outline-secondary {
+    border-color: #667eea;
+    color: #667eea;
+    font-weight: 600;
+}
+.btn-outline-secondary:hover {
+    background: #667eea;
+    color: #fff;
+}
+
+/* Responsive spacing */
+.d-flex.justify-content-end.gap-2 {
+    margin-top: 1rem;
+}
+</style>
+
 <h2 class="mb-4"><i class="bi bi-person-circle me-2"></i>Edit Student Profile</h2>
-<a href="{{ url_for('student.profile') }}" class="btn btn-secondary mb-4"><i class="bi bi-arrow-left-circle me-1"></i>Back to Profile</a>
+<a href="{{ url_for('student.profile') }}" class="btn btn-secondary mb-4">
+  <i class="bi bi-arrow-left-circle me-1"></i>Back to Profile
+</a>
 
 <div class="card shadow-sm">
   <div class="card-body">
