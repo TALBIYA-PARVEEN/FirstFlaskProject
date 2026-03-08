@@ -22,7 +22,7 @@ class Config:
     if os.environ.get("FLASK_ENV") == "production":
         GOOGLE_REDIRECT_URI = os.environ.get(
             "GOOGLE_REDIRECT_URI",
-            "https://TalbiyaParveen.pythonanywhere.com/login/google/callback"
+            "https://talbiyaparveen.pythonanywhere.com/login/google/callback"
         )
     else:  # development
         GOOGLE_REDIRECT_URI = os.environ.get(
