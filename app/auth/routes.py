@@ -736,7 +736,24 @@ def student_register():
         course = request.form.get('course')
         branch = request.form.get('branch')
         phone = request.form.get('phone')
-        resume_filename = request.form.get('resume_filename')  # If file upload, handle separately
+
+        # ----- Handle Resume Upload -----
+        resume_file = request.files.get('resume_filename')
+        resume_filename = None
+        if resume_file and resume_file.filename:
+            from werkzeug.utils import secure_filename
+            import os
+
+            # Secure the filename
+            resume_filename = secure_filename(resume_file.filename)
+
+            # Make sure upload folder exists
+            upload_folder = os.path.join(current_app.root_path, 'static/uploads/resumes')
+            os.makedirs(upload_folder, exist_ok=True)
+
+            # Save file
+            resume_path = os.path.join(upload_folder, resume_filename)
+            resume_file.save(resume_path)
 
         # ----- Check duplicates -----
         if User.query.filter_by(email=email).first():
