@@ -280,7 +280,7 @@ def statistics():
             if total_applications > 0 else 0, 2
         )
     }
-    return render_template("admin/statistics.html", stats=stats)
+    return render_template("admin/statistics.html.j2", stats=stats)
 
 
 # =========================
@@ -329,79 +329,60 @@ def company_detail(user_id):
 # =========================
 # EXPORT APPLICATIONS (CSV)
 # =========================
-@admin_bp.route('/export_applications')
+@admin_bp.route('/export/applications')
 @login_required
 @role_required('admin')
 def export_applications():
-    import csv
-    from flask import Response
-
     applications = Application.query.all()
 
-    def generate():
-        data = []
-        header = ['Application ID', 'Student ID', 'Drive ID', 'Status']
-        data.append(header)
+    si = StringIO()
+    writer = csv.writer(si)
+    writer.writerow(['Application ID', 'Student ID', 'Drive ID', 'Status'])
 
-        for app in applications:
-            row = [
-                app.application_id,
-                app.student_id,
-                app.drive_id,
-                app.status
-            ]
-            data.append(row)
+    for app in applications:
+        writer.writerow([
+            app.application_id,
+            app.student_id,
+            app.drive_id,
+            app.status
+        ])
 
-        for row in data:
-            yield ','.join(map(str, row)) + '\n'
-
+    output = si.getvalue()
     return Response(
-        generate(),
+        output,
         mimetype='text/csv',
-        headers={"Content-Disposition": "attachment;filename=applications.csv"}
+        headers={'Content-Disposition': 'attachment;filename=applications.csv'}
     )
-    
-    
-# =========================
-# EXPORT COMPANIES (CSV)
-# =========================
-@admin_bp.route('/export_companies')
+
+
+# ------------------------
+# EXPORT COMPANIES CSV
+# ------------------------
+@admin_bp.route('/export/companies')
 @login_required
 @role_required('admin')
 def export_companies():
-    import csv
-    from flask import Response
-
     companies = Company.query.all()
 
-    def generate():
-        data = []
-        header = ['User ID', 'Company Name', 'Email', 'Approved']
-        data.append(header)
+    si = StringIO()
+    writer = csv.writer(si)
+    writer.writerow(['User ID', 'Company Name', 'Email', 'Approved'])
 
-        for company in companies:
-            user = User.query.get(company.user_id)
+    for company in companies:
+        user = User.query.get(company.user_id)
+        writer.writerow([
+            company.user_id,
+            company.company_name,
+            user.email if user else '',
+            user.is_approved if user else ''
+        ])
 
-            row = [
-                company.user_id,
-                company.company_name,
-                user.email if user else '',
-                user.is_approved if user else ''
-            ]
-            data.append(row)
-
-        for row in data:
-            yield ','.join(map(str, row)) + '\n'
-
+    output = si.getvalue()
     return Response(
-        generate(),
+        output,
         mimetype='text/csv',
-        headers={"Content-Disposition": "attachment;filename=companies.csv"}
+        headers={'Content-Disposition': 'attachment;filename=companies.csv'}
     )
-    
-    
-
-
 
 # =========================
 # APPLICATIONS

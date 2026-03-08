@@ -144,8 +144,8 @@ h5.mb-3.text-primary {
       <h5 class="mb-3 text-primary"><i class="bi bi-mortarboard-fill me-1"></i>Academic Details</h5>
       <div class="row g-3 mb-4">
         <div class="col-md-6">
-          <label for="department" class="form-label">Department *</label>
-          <select class="form-select" id="department" name="department" required>
+          <label for="department" class="form-label">Branch *</label>
+          <select class="form-select" id="department" name="branch" required>
             {% for dept in ['Computer Science', 'Information Technology', 'Electronics', 'Electrical', 'Mechanical', 'Civil', 'Other'] %}
               <option value="{{ dept }}" {% if profile.department == dept %}selected{% endif %}>{{ dept }}</option>
             {% endfor %}

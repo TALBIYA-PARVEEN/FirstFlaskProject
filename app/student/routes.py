@@ -305,20 +305,98 @@ def edit_profile():
 
 
 # ---------------- DOWNLOAD RESUME ----------------
+# @student_bp.route('/profile/resume')
+# @login_required
+# @role_required('student')
+# def download_resume():
+#     profile = get_student_profile()
+
+#     if profile and profile.resume_filename:
+#         upload_folder = os.path.join(
+#             current_app.root_path,
+#             'static',
+#             'uploads',
+#             'resumes'
+#         )
+#         return send_from_directory(upload_folder, profile.resume_filename)
+
+#     flash('No resume found.', 'warning')
+#     return redirect(url_for('student.profile'))
+
+
+# # ---------------- UPLOAD RESUME ----------------
+# @student_bp.route('/profile/upload_resume', methods=['POST'])
+# @login_required
+# @role_required('student')
+# def upload_resume():
+#     profile = get_student_profile()
+
+#     if not profile:
+#         flash('Profile not found.', 'danger')
+#         return redirect(url_for('student.dashboard'))
+
+#     if 'resume' not in request.files:
+#         flash('No file part.', 'danger')
+#         return redirect(url_for('student.dashboard'))
+
+#     file = request.files['resume']
+
+#     if file.filename == '':
+#         flash('No selected file.', 'danger')
+#         return redirect(url_for('student.dashboard'))
+
+#     if file and allowed_file(file.filename) and file.filename.lower().endswith('.pdf'):
+#         filename = secure_filename(f"{profile.roll_number}_resume.pdf")
+
+#         upload_folder = os.path.join(
+#             current_app.root_path,
+#             'static',
+#             'uploads',
+#             'resumes'
+#         )
+#         os.makedirs(upload_folder, exist_ok=True)
+
+#         file.save(os.path.join(upload_folder, filename))
+
+#         profile.resume_filename = filename
+#         db.session.commit()
+
+#         flash('Resume uploaded successfully.', 'success')
+#     else:
+#         flash('Invalid file type. Only PDF allowed.', 'danger')
+
+#     return redirect(url_for('student.profile'))
+
+
+
+import os
+from flask import current_app, request, redirect, url_for, flash, send_from_directory
+from werkzeug.utils import secure_filename
+from flask_login import login_required
+
+
+# ---------------- DOWNLOAD RESUME ----------------
 @student_bp.route('/profile/resume')
 @login_required
 @role_required('student')
 def download_resume():
+
     profile = get_student_profile()
 
     if profile and profile.resume_filename:
+
         upload_folder = os.path.join(
             current_app.root_path,
             'static',
             'uploads',
             'resumes'
         )
-        return send_from_directory(upload_folder, profile.resume_filename)
+
+        return send_from_directory(
+            upload_folder,
+            profile.resume_filename,
+            as_attachment=True
+        )
 
     flash('No resume found.', 'warning')
     return redirect(url_for('student.profile'))
@@ -329,6 +407,7 @@ def download_resume():
 @login_required
 @role_required('student')
 def upload_resume():
+
     profile = get_student_profile()
 
     if not profile:
@@ -337,15 +416,17 @@ def upload_resume():
 
     if 'resume' not in request.files:
         flash('No file part.', 'danger')
-        return redirect(url_for('student.dashboard'))
+        return redirect(url_for('student.profile'))
 
     file = request.files['resume']
 
     if file.filename == '':
         flash('No selected file.', 'danger')
-        return redirect(url_for('student.dashboard'))
+        return redirect(url_for('student.profile'))
 
-    if file and allowed_file(file.filename) and file.filename.lower().endswith('.pdf'):
+    # ✅ Only allow PDF
+    if file and file.filename.lower().endswith('.pdf'):
+
         filename = secure_filename(f"{profile.roll_number}_resume.pdf")
 
         upload_folder = os.path.join(
@@ -354,18 +435,30 @@ def upload_resume():
             'uploads',
             'resumes'
         )
+
+        # create folder automatically
         os.makedirs(upload_folder, exist_ok=True)
 
-        file.save(os.path.join(upload_folder, filename))
+        file_path = os.path.join(upload_folder, filename)
+
+        file.save(file_path)
 
         profile.resume_filename = filename
         db.session.commit()
 
         flash('Resume uploaded successfully.', 'success')
+
     else:
         flash('Invalid file type. Only PDF allowed.', 'danger')
 
-    return redirect(url_for('student.dashboard'))
+    return redirect(url_for('student.profile'))
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf'}
+
+
+
 
 
 # ---------------- DRIVES ----------------
