@@ -615,12 +615,14 @@
 
 
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash,session
-from flask_login import login_user, logout_user, login_required
+from flask import Blueprint, render_template, request, redirect, url_for, flash,session,current_app
+from flask_login import login_user, logout_user, login_required 
 from app import db
 from app.models import User, Student, Company
 from app import bcrypt
 from datetime import datetime
+import requests
+
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -851,3 +853,89 @@ def company_register():
             return redirect(url_for('auth.company_register'))
 
     return render_template('company_register.html')
+
+
+
+
+@auth_bp.route("/login/get_google/<role>")
+def get_google(role):
+
+    if role not in ["student", "company", "admin"]:
+        return "Invalid role"
+
+    session["google_role"] = role   # 🔥 VERY IMPORTANT
+
+    # build Google auth URL
+    google_auth_url = (
+        "https://accounts.google.com/o/oauth2/v2/auth"
+        "?response_type=code"
+        f"&client_id={current_app.config['GOOGLE_CLIENT_ID']}"
+        f"&redirect_uri={current_app.config['GOOGLE_REDIRECT_URI']}"
+        "&scope=email profile"
+        "&prompt=select_account"
+    )
+
+    return redirect(google_auth_url)
+
+
+
+@auth_bp.route("/login/google/callback")
+def google_callback():
+
+    code = request.args.get("code")
+
+    token_url = "https://oauth2.googleapis.com/token"
+
+    data = {
+        "code": code,
+        "client_id": current_app.config["GOOGLE_CLIENT_ID"],
+        "client_secret": current_app.config["GOOGLE_CLIENT_SECRET"],
+        "redirect_uri": current_app.config["GOOGLE_REDIRECT_URI"],
+        "grant_type": "authorization_code",
+    }
+
+    token_response = requests.post(token_url, data=data)
+    token_json = token_response.json()
+
+    access_token = token_json.get("access_token")
+
+    userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+    userinfo_response = requests.get(
+        userinfo_url,
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+
+    user_info = userinfo_response.json()
+    email = user_info.get("email")
+
+    # 🔥 VERY IMPORTANT: get role from session
+    role = session.get("google_role")
+
+    if not role:
+        flash("Invalid role.", "danger")
+        return redirect(url_for("auth.login"))
+
+    # 🔥 Find user in DB
+    user = User.query.filter_by(email=email, role=role).first()
+
+    if not user:
+        flash("User not registered for this role.", "danger")
+        return redirect(url_for("auth.login"))
+
+    # ✅ Login the user
+    login_user(user)
+
+    flash("Logged in successfully via Google!", "success")
+
+    # 🔥 Redirect based on role
+    if role == "student":
+        return redirect(url_for("student.dashboard"))
+
+    elif role == "company":
+        return redirect(url_for("company.dashboard"))
+
+    elif role == "admin":
+        return redirect(url_for("admin.dashboard"))
+
+    flash("Invalid role.", "danger")
+    return redirect(url_for("auth.login"))
