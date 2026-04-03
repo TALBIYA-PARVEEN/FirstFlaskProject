@@ -234,3 +234,5 @@ paths:
   /company/applications/{app_id}/update:
     post:
       summary: Update application status
+
+#status
