@@ -4,3 +4,4 @@ instance/
 *.pyc
 .env
 db.sqlite3
+app/static/uploads/
