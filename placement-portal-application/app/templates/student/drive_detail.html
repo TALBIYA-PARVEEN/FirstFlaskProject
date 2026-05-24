@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ drive.title }} - Drive Details{% endblock %}
+
+{% block content %}
+<style>
+/* Body background */
+body {
+    background: #111827;
+    color: #f9fafb;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+}
+
+/* Heading */
+h2.mb-3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    text-align: center;
+}
+h2.mb-3::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    margin: 0.5rem auto 0 auto;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #667eea, #43e97b);
+}
+
+/* Back button */
+.btn-outline-secondary {
+    color: #f9fafb;
+    border-color: #6b7280;
+}
+.btn-outline-secondary:hover {
+    background: #6b7280;
+    border-color: #43e97b;
+    color: #fff;
+}
+
+/* Card Styling */
+.card {
+    background: #1f2937;
+    color: #f9fafb;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+/* Card Header */
+.card-header.bg-primary {
+    background: linear-gradient(135deg, #667eea, #43e97b);
+    color: #fff;
+    font-weight: 600;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+/* Card Footer */
+.card-footer {
+    background: #111827;
+    border-top: 1px solid #374151;
+}
+
+/* Badges */
+.badge {
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.45em 0.6em;
+    border-radius: 0.5rem;
+}
+
+/* Links */
+a {
+    color: #43e97b;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+/* Buttons */
+.btn-success {
+    background: linear-gradient(135deg, #43e97b, #667eea);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-success:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(67, 233, 123, 0.5);
+}
+.btn-outline-primary {
+    border-color: #667eea;
+    color: #667eea;
+}
+.btn-outline-primary:hover {
+    background: #667eea;
+    color: #fff;
+}
+
+/* Headings in card body */
+.card-body h6.fw-bold {
+    color: #43e97b;
+    margin-top: 1rem;
+}
+
+/* Paragraphs in card body */
+.card-body p {
+    margin-bottom: 0.6rem;
+}
+
+/* Icons */
+.bi {
+    font-size: 1rem;
+    color: #43e97b;
+    vertical-align: middle;
+    margin-right: 0.3rem;
+}
+</style>
+
+<h2 class="mb-3">{{ drive.title }}</h2>
+
+<a href="{{ url_for('student.drives') }}" class="btn btn-outline-secondary mb-4">
+  <i class="bi bi-arrow-left-circle me-1"></i> Back to All Drives
+</a>
+
+<div class="card shadow-sm mb-4">
+  <!-- Company Header -->
+  <div class="card-header bg-primary text-white">
+    <h5 class="mb-0">{{ drive.company.company_name }}</h5>
+  </div>
+
+  <!-- Card Body -->
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <p><i class="bi bi-briefcase-fill me-1"></i><strong>Job Type:</strong> {{ drive.job_type or 'Not specified' }}</p>
+        <p><i class="bi bi-geo-alt-fill me-1"></i><strong>Location:</strong> {{ drive.location or 'Not specified' }}</p>
+        <p><i class="bi bi-cash-stack me-1"></i><strong>Package:</strong> {{ drive.package or 'Not disclosed' }}</p>
+      </div>
+      <div class="col-md-6">
+        <p>
+          <i class="bi bi-calendar-check-fill me-1"></i><strong>Application Deadline:</strong> 
+          {% if drive.application_deadline %}
+            <span class="badge bg-warning text-dark">{{ drive.application_deadline.strftime('%d %B %Y') }}</span>
+          {% else %}
+            N/A
+          {% endif %}
+        </p>
+        <p>
+          <i class="bi bi-calendar-event me-1"></i><strong>Posted On:</strong> 
+          {{ drive.created_at.strftime('%d %B %Y') if drive.created_at else 'N/A' }}
+        </p>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Job Description -->
+    <h6 class="fw-bold"><i class="bi bi-card-text me-1"></i>Job Description</h6>
+    <p>{{ drive.description or 'No description provided.' }}</p>
+
+    {% if drive.eligibility_criteria %}
+      <h6 class="fw-bold"><i class="bi bi-person-check-fill me-1"></i>Eligibility Criteria</h6>
+      <p>{{ drive.eligibility_criteria }}</p>
+    {% endif %}
+
+    {% if drive.required_skills %}
+      <h6 class="fw-bold"><i class="bi bi-tools me-1"></i>Required Skills</h6>
+      <p>{{ drive.required_skills }}</p>
+    {% endif %}
+
+    <hr>
+
+    <!-- Company Info -->
+    <h6 class="fw-bold"><i class="bi bi-building me-1"></i>About {{ drive.company.company_name }}</h6>
+    <p>{{ drive.company.description or 'No company description available.' }}</p>
+    {% if drive.company.website %}
+      <p><strong>Website:</strong> <a href="{{ drive.company.website }}" target="_blank">{{ drive.company.website }}</a></p>
+    {% endif %}
+    {% if drive.company.location %}
+      <p><strong>Company Location:</strong> {{ drive.company.location }}</p>
+    {% endif %}
+  </div>
+
+  <!-- Card Footer: Apply / Already Applied -->
+  <div class="card-footer text-end">
+    {% if already_applied %}
+      <span class="badge bg-info me-2">
+        <i class="bi bi-check-circle me-1"></i>Already Applied
+      </span>
+      <a href="{{ url_for('student.applications') }}" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-list-ul me-1"></i>View My Applications
+      </a>
+    {% else %}
+      <form method="POST" action="{{ url_for('student.apply_drive', drive_id=drive.drive_id) }}" style="display:inline;">
+        <button type="submit" class="btn btn-success">
+          <i class="bi bi-send-fill me-1"></i> Apply Now
+        </button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Companies{% endblock %}
+
+{% block content %}
+<!-- Full-page wrapper -->
+<div class="dashboard-bg">
+  <div class="container position-relative">
+
+    <!-- Page Heading -->
+    <h2 class="section-heading text-center mb-5">Manage Companies</h2>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-gradient-secondary mb-4 shadow hover-glow text-white">
+      <i class="bi bi-arrow-left-circle me-2"></i> Back to Dashboard
+    </a>
+
+    <!-- Search Form -->
+    <form method="GET" class="mb-4">
+      <div class="input-group shadow-sm">
+        <input type="text" name="q" class="form-control bg-dark text-white border border-secondary"
+               placeholder="Search by company name..." value="{{ q }}">
+        <button class="btn btn-gradient-primary text-white" type="submit"><i class="bi bi-search me-1"></i> Search</button>
+        {% if q %}
+        <a href="{{ url_for('admin.companies') }}" class="btn btn-outline-light text-white">Clear</a>
+        {% endif %}
+      </div>
+    </form>
+
+    {% if companies %}
+    <div class="table-responsive shadow rounded">
+      <table class="table table-hover align-middle mb-0 text-white">
+        <thead class="table-dark">
+          <tr>
+            <th>Company Name</th>
+            <th>Email</th>
+            <th>Industry</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in companies %}
+          <tr>
+            <td>
+              <a href="{{ url_for('admin.company_detail', user_id=user.user_id) }}" class="text-primary text-decoration-none">
+                {{ user.company.company_name if user.company else 'N/A' }}
+              </a>
+            </td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.company.industry if user.company else 'N/A' }}</td>
+            <td>{{ user.company.location if user.company else 'N/A' }}</td>
+            <td>
+              {% if user.is_blacklisted %}
+              <span class="badge bg-danger">Blacklisted</span>
+              {% elif user.is_approved %}
+              <span class="badge bg-success">Approved</span>
+              {% else %}
+              <span class="badge bg-warning">Pending</span>
+              {% endif %}
+            </td>
+            <td>
+              <!-- View button -->
+              <a href="{{ url_for('admin.company_detail', user_id=user.user_id) }}"
+                 class="btn  btn-success btn-sm mb-1 shadow hover-glow">View</a>
+
+              <!-- Approve button -->
+              {% if not user.is_approved %}
+              <form action="{{ url_for('admin.approve_company', user_id=user.user_id) }}" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-success btn-sm mb-1 shadow hover-glow">Approve</button>
+              </form>
+              {% endif %}
+
+              <!-- Blacklist / Unblacklist -->
+              {% if user.is_blacklisted %}
+              <form action="{{ url_for('admin.blacklist_company', user_id=user.user_id) }}" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-success btn-sm mb-1 shadow hover-glow">Unblacklist</button>
+              </form>
+              {% elif user.is_approved %}
+              <form action="{{ url_for('admin.blacklist_company', user_id=user.user_id) }}" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm mb-1 shadow hover-glow">Blacklist</button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info shadow rounded">No companies found.</div>
+    {% endif %}
+
+  </div>
+</div>
+
+<style>
+/* Page background */
+.dashboard-bg { position: relative; z-index: 1; padding: 3rem 0; }
+html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+body {
+  background: radial-gradient(circle at top, #1f2937 0%, #111827 100%);
+  color: #f9fafb;
+}
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.15;
+  z-index: 0;
+}
+body::before { width: 600px; height: 600px; background: #667eea; top: 5%; left: -10%; }
+body::after { width: 700px; height: 700px; background: #43e97b; bottom: 5%; right: -15%; }
+
+/* Section headings */
+.section-heading { font-weight: 700; font-size: 2rem; color: #f9fafb; position: relative; margin-bottom: 2rem; text-align:center;}
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 60px; height: 4px;
+  background: linear-gradient(90deg, #667eea, #43e97b);
+  border-radius: 2px;
+  margin: 0.5rem auto 0 auto;
+}
+
+/* Input group styling */
+.input-group .form-control {
+  border-radius: 8px 0 0 8px;
+  background-color: rgba(255,255,255,0.05);
+  color: #f9fafb;
+}
+.input-group .form-control::placeholder { color: #d1d5db; }
+.input-group .btn { border-radius: 0 8px 8px 0; font-weight:600; }
+
+/* Button gradients */
+.btn-gradient-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
+.btn-gradient-secondary { background: linear-gradient(135deg, #6b7280, #9ca3af); color: #fff; }
+.btn-gradient-primary:hover { background: linear-gradient(135deg, #764ba2, #667eea); }
+.btn-gradient-secondary:hover { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+
+/* Table styling */
+.table { color: #f9fafb; }
+.table a { color: #f9fafb; }
+.table-hover tbody tr:hover { background-color: rgba(255,255,255,0.08); }
+.table-dark thead th { background-color: rgba(0,0,0,0.7); }
+.table td, .table th { vertical-align: middle; }
+
+/* Form & button spacing */
+.mb-1 { margin-bottom: 0.25rem; }
+.shadow { box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.hover-glow:hover { transform: scale(1.02); transition: 0.3s ease-in-out; }
+
+/* Ensure outline-light buttons are visible */
+.btn-outline-light {
+  color: #f9fafb !important;
+  border-color: #f9fafb !important;
+}
+.btn-outline-light:hover {
+  color: #111827 !important;
+  background: #f9fafb !important;
+}
+</style>
+{% endblock %}

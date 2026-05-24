@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %}All Applications{% endblock %}
+
+{% block content %}
+<div class="dashboard-bg">
+
+  <div class="container position-relative">
+
+    <!-- Page Heading -->
+    <h2 class="section-heading text-center mb-5">All Applications</h2>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-gradient-secondary mb-4 shadow hover-glow text-white">
+      <i class="bi bi-arrow-left-circle me-2"></i> Back to Dashboard
+    </a>
+
+    <!-- Search Form -->
+    <form method="GET" class="mb-4">
+      <div class="input-group shadow-sm">
+        <input type="text" name="q" class="form-control bg-dark text-white border border-secondary" 
+               placeholder="Search by student name or drive title..." value="{{ q }}">
+        <button class="btn btn-gradient-primary text-white" type="submit">
+          <i class="bi bi-search me-1"></i> Search
+        </button>
+      </div>
+    </form>
+
+    {% set status_colors = {
+      "Applied": "secondary",
+      "Pending": "warning",
+      "Shortlisted": "info",
+      "Selected": "success",
+      "Rejected": "danger"
+    } %}
+
+    {% if applications %}
+    <div class="table-responsive shadow rounded">
+      <table class="table table-hover align-middle mb-0 bg-white">
+        <thead class="table-dark">
+          <tr>
+            <th>Student Name</th>
+            <th>Roll Number</th>
+            <th>Drive Title</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th>Applied On</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in applications %}
+          <tr>
+            <td>{{ app.student.full_name if app.student else 'N/A' }}</td>
+            <td>{{ app.student.roll_number if app.student else 'N/A' }}</td>
+            <td>{{ app.drive.job_title if app.drive else 'N/A' }}</td>
+            <td>{{ app.drive.company.company_name if app.drive and app.drive.company else 'N/A' }}</td>
+            <td>
+              <span class="badge bg-{{ status_colors.get(app.status, 'secondary') }} px-3 py-2">
+                {{ app.status }}
+              </span>
+            </td>
+            <td>{{ app.application_date.strftime('%Y-%m-%d %H:%M') if app.application_date else 'N/A' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info shadow rounded">No applications found.</div>
+    {% endif %}
+
+  </div>
+</div>
+
+<style>
+/* Page background */
+.dashboard-bg { position: relative; z-index: 1; padding: 3rem 0; }
+html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+body {
+  background: radial-gradient(circle at top, #1f2937 0%, #111827 100%);
+  color: #f9fafb;
+}
+body::before,
+body::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.15;
+  z-index: 0;
+}
+body::before { width: 600px; height: 600px; background: #667eea; top: 5%; left: -10%; }
+body::after { width: 700px; height: 700px; background: #43e97b; bottom: 5%; right: -15%; }
+
+/* Section heading */
+.section-heading { font-weight: 700; font-size: 2rem; color: #f9fafb; position: relative; margin-bottom: 2rem; text-align:center;}
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 60px; height: 4px;
+  background: linear-gradient(90deg, #667eea, #43e97b);
+  border-radius: 2px;
+  margin: 0.5rem auto 0 auto;
+}
+
+/* Input group */
+.input-group .form-control {
+  border-radius: 8px 0 0 8px;
+  background-color: rgba(255,255,255,0.05);
+  color: #f9fafb;
+}
+.input-group .form-control::placeholder { color: #d1d5db; }
+.input-group .btn { border-radius: 0 8px 8px 0; font-weight:600; }
+
+/* Buttons */
+.btn-gradient-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
+.btn-gradient-secondary { background: linear-gradient(135deg, #6b7280, #9ca3af); color: #fff; }
+.btn-gradient-primary:hover { background: linear-gradient(135deg, #764ba2, #667eea); }
+.btn-gradient-secondary:hover { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+
+/* Table styling */
+.table { color: #f9fafb; }
+.table-hover tbody tr:hover { background-color: rgba(255,255,255,0.08); }
+.table-dark thead th { background-color: rgba(0,0,0,0.7); }
+.table td, .table th { vertical-align: middle; }
+
+/* Shadows and hover */
+.shadow { box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.hover-glow:hover { transform: scale(1.02); transition: 0.3s ease-in-out; }
+</style>
+{% endblock %}

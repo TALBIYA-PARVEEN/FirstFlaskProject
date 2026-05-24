@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Company Profile{% endblock %}
+
+{% block content %}
+<div class="dashboard-bg">
+  <div class="container position-relative">
+
+    <h2 class="section-heading text-center mb-5">Edit Company Profile</h2>
+
+    <a href="{{ url_for('company.profile') }}" 
+       class="btn btn-gradient-secondary mb-4 shadow hover-glow text-white">
+       <i class="bi bi-arrow-left-circle me-2"></i> Back to Profile
+    </a>
+
+    <div class="card shadow-sm rounded">
+      <div class="card-body">
+
+        <form method="POST">
+          <!-- Company Name -->
+          <div class="mb-3">
+            <label for="company_name" class="form-label text-black">Company Name *</label>
+            <input type="text" class="form-control bg-dark text-white border border-secondary" 
+                   id="company_name" name="company_name" value="{{ profile.company_name }}" required>
+          </div>
+
+          <!-- Industry & Location -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="industry" class="form-label text-black">Industry</label>
+              <input type="text" class="form-control bg-dark text-white border border-secondary" 
+                     id="industry" name="industry" value="{{ profile.industry or '' }}">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="location" class="form-label text-black">Location</label>
+              <input type="text" class="form-control bg-dark text-white border border-secondary" 
+                     id="location" name="location" value="{{ profile.location or '' }}">
+            </div>
+          </div>
+
+          <!-- Website -->
+          <div class="mb-3">
+            <label for="website" class="form-label text-black">Website</label>
+            <input type="url" class="form-control bg-dark text-white border border-secondary" 
+                   id="website" name="website" value="{{ profile.website or '' }}">
+          </div>
+
+          <!-- Contact Person & Phone -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="contact_person" class="form-label text-black">Contact Person</label>
+              <input type="text" class="form-control bg-dark text-white border border-secondary" 
+                     id="contact_person" name="contact_person" value="{{ profile.contact_person or '' }}">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="contact_phone" class="form-label text-black">Contact Phone</label>
+              <input type="tel" class="form-control bg-dark text-white border border-secondary" 
+                     id="contact_phone" name="contact_phone" value="{{ profile.contact_phone or '' }}">
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-3">
+            <label for="description" class="form-label text-black">Company Description</label>
+            <textarea class="form-control bg-dark text-white border border-secondary" 
+                      id="description" name="description" rows="4">{{ profile.description or '' }}</textarea>
+          </div>
+
+          <!-- Submit & Cancel -->
+          <div class="d-flex justify-content-end gap-2">
+            <button type="submit" class="btn btn-gradient-primary shadow hover-glow text-black">
+              <i class="bi bi-save me-1"></i> Save Changes
+            </button>
+            <a href="{{ url_for('company.profile') }}" 
+               class="btn btn-gradient-secondary shadow hover-glow text-black">
+               <i class="bi bi-x-circle me-1"></i> Cancel
+            </a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+/* Page background */
+.dashboard-bg { position: relative; z-index: 1; padding: 3rem 0; }
+html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+body {
+  background: radial-gradient(circle at top, #1f2937 0%, #111827 100%);
+  color: #f9fafb;
+}
+body::before,
+body::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.15;
+  z-index: 0;
+}
+body::before { width: 600px; height: 600px; background: #667eea; top: 5%; left: -10%; }
+body::after { width: 700px; height: 700px; background: #43e97b; bottom: 5%; right: -15%; }
+
+/* Section heading */
+.section-heading { font-weight: 700; font-size: 2rem; color: #f9fafb; position: relative; margin-bottom: 2rem; text-align:center;}
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 60px; height: 4px;
+  background: linear-gradient(90deg, #667eea, #43e97b);
+  border-radius: 2px;
+  margin: 0.5rem auto 0 auto;
+}
+
+/* Inputs */
+/* Form inputs and labels */
+.form-label {
+    color: #f9fafb;  /* makes all labels visible */
+    font-weight: 500;
+}
+
+.form-control {
+    border-radius: 8px;
+    background-color: rgba(255,255,255,0.05);
+    color: #f9fafb;  /* input text color */
+    border: 1px solid #4b5563; /* subtle border for visibility */
+}
+
+.form-control::placeholder {
+    color: #d1d5db;  /* lighter placeholder color for visibility */
+    opacity: 1;
+}
+
+/* When input is focused, make text more visible */
+.form-control:focus {
+    background-color: rgba(255,255,255,0.08);
+    color: #f9fafb;
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25);
+}
+
+
+/* Buttons */
+.btn-gradient-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
+.btn-gradient-secondary { background: linear-gradient(135deg, #6b7280, #9ca3af); color: #fff; }
+.btn-gradient-primary:hover { background: linear-gradient(135deg, #764ba2, #667eea); }
+.btn-gradient-secondary:hover { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+.shadow { box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.hover-glow:hover { transform: scale(1.02); transition: 0.3s ease-in-out; }
+
+/* Card */
+.card { border-radius: 10px; overflow: hidden; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .btn { margin-top: 0.3rem; margin-bottom: 0.3rem; }
+}
+</style>
+{% endblock %}

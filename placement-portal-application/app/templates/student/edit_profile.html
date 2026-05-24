@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<style>
+/* Page background */
+body {
+    background: radial-gradient(circle at top, #1f2937 0%, #111827 100%);
+    color: #f9fafb;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+}
+body::before, body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.15;
+    z-index: 0;
+}
+body::before { width: 600px; height: 600px; background: #667eea; top: 5%; left: -10%; }
+body::after { width: 700px; height: 700px; background: #43e97b; bottom: 5%; right: -15%; }
+
+/* Section heading */
+h2.mb-4 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+h2.mb-4::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #43e97b);
+    border-radius: 2px;
+    margin: 0.5rem auto 0 auto;
+}
+
+/* Back button */
+.btn-secondary {
+    background: linear-gradient(135deg, #6b7280, #9ca3af);
+    color: #fff;
+    font-weight: 600;
+}
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #9ca3af, #6b7280);
+}
+
+/* Card styling */
+.card {
+    border: none;
+    border-radius: 15px;
+    background: #1f2937;
+    color: #f9fafb;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+.card-body {
+    padding: 2rem;
+}
+
+/* Form inputs */
+.form-label {
+    font-weight: 600;
+}
+.form-control, .form-select, textarea {
+    border-radius: 10px;
+    background-color: rgba(255,255,255,0.05);
+    color: #f9fafb;
+    border: 1px solid #4b5563;
+}
+.form-control::placeholder,
+textarea::placeholder {
+    color: #9ca3af;
+}
+.form-control:focus, .form-select:focus, textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25);
+    background-color: rgba(255,255,255,0.08);
+    color: #f9fafb;
+}
+
+/* Section headers inside form */
+h5.mb-3.text-primary {
+    color: #667eea;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 5px;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #43e97b);
+    color: #fff;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, #43e97b, #667eea);
+    transform: scale(1.05);
+}
+.btn-outline-secondary {
+    border-color: #667eea;
+    color: #667eea;
+    font-weight: 600;
+}
+.btn-outline-secondary:hover {
+    background: #667eea;
+    color: #fff;
+}
+
+/* Responsive spacing */
+.d-flex.justify-content-end.gap-2 {
+    margin-top: 1rem;
+}
+</style>
+
+<h2 class="mb-4"><i class="bi bi-person-circle me-2"></i>Edit Student Profile</h2>
+<a href="{{ url_for('student.profile') }}" class="btn btn-secondary mb-4">
+  <i class="bi bi-arrow-left-circle me-1"></i>Back to Profile
+</a>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <form method="POST">
+      
+      <!-- Personal Info -->
+      <h5 class="mb-3 text-primary"><i class="bi bi-info-circle me-1"></i>Personal Information</h5>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label for="full_name" class="form-label">Full Name *</label>
+          <input type="text" class="form-control" id="full_name" name="full_name" value="{{ profile.full_name }}" required>
+        </div>
+        <div class="col-md-6">
+          <label for="roll_number" class="form-label">Roll Number *</label>
+          <input type="text" class="form-control" id="roll_number" name="roll_number" value="{{ profile.roll_number }}" required readonly>
+        </div>
+      </div>
+
+      <!-- Academic Info -->
+      <h5 class="mb-3 text-primary"><i class="bi bi-mortarboard-fill me-1"></i>Academic Details</h5>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label for="department" class="form-label">Branch *</label>
+          <select class="form-select" id="department" name="branch" required>
+            {% for dept in ['Computer Science', 'Information Technology', 'Electronics', 'Electrical', 'Mechanical', 'Civil', 'Other'] %}
+              <option value="{{ dept }}" {% if profile.department == dept %}selected{% endif %}>{{ dept }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="year" class="form-label">Year of Study</label>
+          <select class="form-select" id="year" name="year">
+            {% for y in range(1,5) %}
+              <option value="{{ y }}" {% if profile.year == y %}selected{% endif %}>{{ y }}{{ ['st','nd','rd','th'][y-1] }} Year</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <label for="cgpa" class="form-label">CGPA</label>
+          <input type="number" step="0.01" min="0" max="10" class="form-control" id="cgpa" name="cgpa" value="{{ profile.cgpa or '' }}">
+        </div>
+        <div class="col-md-4">
+          <label for="tenth_marks" class="form-label">10th Marks (%)</label>
+          <input type="number" step="0.01" min="0" max="100" class="form-control" id="tenth_marks" name="tenth_marks" value="{{ profile.tenth_marks or '' }}">
+        </div>
+        <div class="col-md-4">
+          <label for="twelfth_marks" class="form-label">12th Marks (%)</label>
+          <input type="number" step="0.01" min="0" max="100" class="form-control" id="twelfth_marks" name="twelfth_marks" value="{{ profile.twelfth_marks or '' }}">
+        </div>
+      </div>
+
+      <!-- Contact Info -->
+      <h5 class="mb-3 text-primary"><i class="bi bi-telephone-fill me-1"></i>Contact Information</h5>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label for="phone" class="form-label">Phone Number</label>
+          <input type="tel" class="form-control" id="phone" name="phone" value="{{ profile.phone or '' }}">
+        </div>
+        <div class="col-md-6">
+          <label for="dob" class="form-label">Date of Birth</label>
+          <input type="date" class="form-control" id="dob" name="dob" value="{{ profile.dob.strftime('%Y-%m-%d') if profile.dob else '' }}">
+        </div>
+      </div>
+
+      <!-- Address & Skills -->
+      <h5 class="mb-3 text-primary"><i class="bi bi-geo-alt-fill me-1"></i>Address & Skills</h5>
+      <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <textarea class="form-control" id="address" name="address" rows="2">{{ profile.address or '' }}</textarea>
+      </div>
+      <div class="mb-4">
+        <label for="skills" class="form-label">Skills</label>
+        <textarea class="form-control" id="skills" name="skills" rows="2" placeholder="e.g., Python, Java, SQL, Data Analysis">{{ profile.skills or '' }}</textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="d-flex justify-content-end gap-2">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>Save Changes</button>
+        <a href="{{ url_for('student.profile') }}" class="btn btn-outline-secondary"><i class="bi bi-x-circle me-1"></i>Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

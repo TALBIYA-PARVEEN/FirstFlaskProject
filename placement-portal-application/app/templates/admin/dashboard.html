@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<!-- Full-page dashboard wrapper -->
+<div class="dashboard-bg">
+  <div class="container position-relative">
+
+    <!-- Page Heading -->
+    <h2 class="section-heading text-center mb-5">Admin Dashboard</h2>
+
+    <!-- Metrics Grid -->
+    <div class="row g-4 mb-5">
+      <!-- Students -->
+      <div class="col-lg-3 col-md-6">
+        <div class="card text-white gradient-primary shadow-lg hover-glow">
+          <div class="card-body d-flex align-items-center">
+            <div class="me-3 display-4"><i class="bi bi-people-fill"></i></div>
+            <div>
+              <h6>Students</h6>
+              <p class="h2 fw-bold">{{ stats.students }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Companies -->
+      <div class="col-lg-3 col-md-6">
+        <div class="card text-white gradient-success shadow-lg hover-glow">
+          <div class="card-body d-flex align-items-center">
+            <div class="me-3 display-4"><i class="bi bi-building"></i></div>
+            <div>
+              <h6>Companies</h6>
+              <p class="h2 fw-bold">{{ stats.companies }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Companies -->
+      <div class="col-lg-3 col-md-6">
+        <div class="card text-white gradient-warning shadow-lg hover-glow">
+          <div class="card-body d-flex align-items-center">
+            <div class="me-3 display-4"><i class="bi bi-clock-history"></i></div>
+            <div>
+              <h6>Pending Companies</h6>
+              <p class="h2 fw-bold">{{ stats.pending_companies }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Drives -->
+      <div class="col-lg-3 col-md-6">
+        <div class="card text-white gradient-info shadow-lg hover-glow">
+          <div class="card-body d-flex align-items-center">
+            <div class="me-3 display-4"><i class="bi bi-briefcase-fill"></i></div>
+            <div>
+              <h6>Pending Drives</h6>
+              <p class="h2 fw-bold">{{ stats.pending_drives }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Secondary Metrics -->
+    <div class="row g-4 mb-5">
+      <div class="col-lg-3 col-md-6">
+        <div class="card text-white gradient-secondary shadow-lg hover-glow">
+          <div class="card-body d-flex align-items-center">
+            <div class="me-3 display-4"><i class="bi bi-speedometer2"></i></div>
+            <div>
+              <h6>Active Drives</h6>
+              <p class="h2 fw-bold">{{ stats.active_drives }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="card text-white gradient-dark shadow-lg hover-glow">
+          <div class="card-body d-flex align-items-center">
+            <div class="me-3 display-4"><i class="bi bi-file-earmark-text"></i></div>
+            <div>
+              <h6>Applications</h6>
+              <p class="h2 fw-bold">{{ stats.applications }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="my-5">
+
+    <!-- Admin Actions -->
+    <h4 class="section-heading text-center mb-4">Admin Actions</h4>
+    <div class="row g-3 mb-4">
+      <div class="col-lg-3 col-md-6">
+        <a href="{{ url_for('admin.pending_companies') }}" class="btn btn-gradient-warning w-100 shadow hover-glow">
+          <i class="bi bi-building-check me-2"></i> Approve Companies
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <a href="{{ url_for('admin.pending_drives') }}" class="btn btn-gradient-info w-100 shadow hover-glow">
+          <i class="bi bi-clipboard-check me-2"></i> Approve Drives
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <a href="{{ url_for('admin.students') }}" class="btn btn-gradient-primary w-100 shadow hover-glow">
+          <i class="bi bi-person-lines-fill me-2"></i> View/Blacklist Students
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <a href="{{ url_for('admin.companies') }}" class="btn btn-gradient-success w-100 shadow hover-glow">
+          <i class="bi bi-building me-2"></i> View/Blacklist Companies
+        </a>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-lg-3 col-md-6">
+        <a href="{{ url_for('admin.applications') }}" class="btn btn-gradient-dark w-100 shadow hover-glow">
+          <i class="bi bi-folder2-open me-2"></i> View All Applications
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <a href="{{ url_for('admin.drives') }}" class="btn btn-gradient-secondary w-100 shadow hover-glow">
+          <i class="bi bi-graph-up me-2"></i> View All Drives
+        </a>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <a href="{{ url_for('admin.statistics') }}" class="btn btn-outline-light w-100 shadow hover-glow">
+          <i class="bi bi-bar-chart-line-fill me-2"></i> 📊 View Statistics
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+/* Full-page background */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Background gradient */
+body {
+  background: radial-gradient(circle at top, #1f2937 0%, #111827 100%);
+  position: relative;
+  color: #f9fafb;
+}
+
+/* Full-screen abstract circles */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.15;
+  z-index: 0;
+}
+body::before {
+  width: 600px;
+  height: 600px;
+  background: #667eea;
+  top: 5%;
+  left: -10%;
+}
+body::after {
+  width: 700px;
+  height: 700px;
+  background: #43e97b;
+  bottom: 5%;
+  right: -15%;
+}
+
+/* Content wrapper */
+.dashboard-bg { position: relative; z-index: 1; padding: 3rem 0; }
+
+/* Section headings */
+.section-heading {
+  font-weight: 700;
+  font-size: 2rem;
+  color: #f9fafb;
+  position: relative;
+  margin-bottom: 2rem;
+}
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #43e97b);
+  border-radius: 2px;
+  margin: 0.5rem auto 0 auto;
+}
+
+/* Card gradients */
+.gradient-primary { background: linear-gradient(135deg, #667eea, #764ba2); }
+.gradient-success { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.gradient-warning { background: linear-gradient(135deg, #f7971e, #ffd200); }
+.gradient-info { background: linear-gradient(135deg, #00c6ff, #0072ff); }
+.gradient-secondary { background: linear-gradient(135deg, #9ca3af, #6b7280); color: #111827; }
+.gradient-dark { background: linear-gradient(135deg, #2d3748, #4b5563); color: #f9fafb; }
+
+/* Cards */
+.card { border-radius: 15px; position: relative; overflow: hidden; }
+.card::before {
+  content: '';
+  position: absolute;
+  top:0; left:0; right:0; bottom:0;
+  background: rgba(255,255,255,0.02);
+  pointer-events: none;
+}
+.hover-glow:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(255,255,255,0.15);
+  transition: 0.3s ease-in-out;
+}
+
+/* Buttons */
+.btn { border-radius: 10px; font-weight: 600; }
+.btn-gradient-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
+.btn-gradient-success { background: linear-gradient(135deg, #43e97b, #38f9d7); color: #fff; }
+.btn-gradient-warning { background: linear-gradient(135deg, #f7971e, #ffd200); color: #fff; }
+.btn-gradient-info { background: linear-gradient(135deg, #00c6ff, #0072ff); color: #fff; }
+.btn-gradient-dark { background: linear-gradient(135deg, #2d3748, #4b5563); color: #fff; }
+.btn-gradient-secondary { background: linear-gradient(135deg, #9ca3af, #6b7280); color: #111827; }
+</style>
+{% endblock %}

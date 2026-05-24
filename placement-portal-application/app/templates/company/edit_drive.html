@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}My Drives{% endblock %}
+
+{% block content %}
+<div class="dashboard-bg">
+  <div class="container position-relative">
+
+    <!-- Page Heading -->
+    <h2 class="section-heading text-center mb-5">My Placement Drives</h2>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('company.dashboard') }}" class="btn btn-gradient-secondary mb-4 shadow hover-glow text-white">
+        Back to Dashboard
+    </a>
+
+    {% if drives %}
+    <div class="card shadow rounded mb-4 p-3">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 text-white">
+            <thead class="table-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <th>Applications</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for drive in drives %}
+                <tr>
+                    <td>{{ drive.job_title }}</td>
+                    <td>{{ drive.eligibility or 'N/A' }}</td>
+                    <td>{{ drive.application_deadline.strftime('%Y-%m-%d') if drive.application_deadline else 'N/A' }}</td>
+                    <td>
+                        {% if drive.status == 'Pending' %}
+                        <span class="badge bg-warning">Pending</span>
+                        {% elif drive.status in ['Active','Approved'] %}
+                        <span class="badge bg-success">{{ drive.status }}</span>
+                        {% elif drive.status == 'Closed' %}
+                        <span class="badge bg-secondary">Closed</span>
+                        {% else %}
+                        <span class="badge bg-secondary">{{ drive.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('company.drive_applications', drive_id=drive.drive_id) }}"
+                           class="btn btn-gradient-primary btn-sm shadow hover-glow text-white">
+                           View ({{ drive.applications|length }})
+                        </a>
+                    </td>
+                    <td>
+                        {% if drive.status in ['Active','Approved'] %}
+                        <a href="{{ url_for('company.edit_drive', drive_id=drive.drive_id) }}" class="btn btn-gradient-warning btn-sm shadow hover-glow text-white">Edit</a>
+                        <form action="{{ url_for('company.close_drive', drive_id=drive.drive_id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-gradient-danger btn-sm shadow hover-glow text-white"
+                                onclick="return confirm('Close this drive?')">Close</button>
+                        </form>
+                        {% elif drive.status == 'Closed' %}
+                        <form action="{{ url_for('company.reopen_drive', drive_id=drive.drive_id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-gradient-success btn-sm shadow hover-glow text-white"
+                                onclick="return confirm('Reopen this drive?')">Reopen</button>
+                        </form>
+                        {% else %}
+                        <span class="text-muted">Pending Approval</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    </div>
+
+    <a href="{{ url_for('company.create_drive') }}" class="btn btn-gradient-success shadow hover-glow text-white mb-3">
+        Create New Drive
+    </a>
+
+    {% else %}
+    <div class="alert alert-info shadow rounded">No placement drives created yet.</div>
+    {% endif %}
+
+  </div>
+</div>
+
+<style>
+/* Page background */
+.dashboard-bg { position: relative; z-index: 1; padding: 3rem 0; }
+html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+body {
+  background: radial-gradient(circle at top, #1f2937 0%, #111827 100%);
+  color: #f9fafb;
+}
+body::before,
+body::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.15;
+  z-index: 0;
+}
+body::before { width: 600px; height: 600px; background: #667eea; top: 5%; left: -10%; }
+body::after { width: 700px; height: 700px; background: #43e97b; bottom: 5%; right: -15%; }
+
+/* Section heading */
+.section-heading { font-weight: 700; font-size: 2rem; color: #f9fafb; position: relative; margin-bottom: 2rem; text-align:center;}
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 60px; height: 4px;
+  background: linear-gradient(90deg, #667eea, #43e97b);
+  border-radius: 2px;
+  margin: 0.5rem auto 0 auto;
+}
+
+/* Table styling */
+.table { color: #f9fafb; }
+.table-hover tbody tr:hover { background-color: rgba(255,255,255,0.08); }
+.table-dark thead th { background-color: rgba(0,0,0,0.7); }
+.table td, .table th { vertical-align: middle; }
+
+/* Buttons */
+.btn-gradient-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border:none; font-weight:600; }
+.btn-gradient-secondary { background: linear-gradient(135deg, #6b7280, #9ca3af); color: #fff; border:none; font-weight:600; }
+.btn-gradient-success { background: linear-gradient(135deg, #43e97b, #10b981); color: #fff; border:none; font-weight:600; }
+.btn-gradient-warning { background: linear-gradient(135deg, #facc15, #f59e0b); color: #fff; border:none; font-weight:600; }
+.btn-gradient-danger { background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; border:none; font-weight:600; }
+
+.btn-gradient-primary:hover { background: linear-gradient(135deg, #764ba2, #667eea); }
+.btn-gradient-secondary:hover { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+.btn-gradient-success:hover { background: linear-gradient(135deg, #10b981, #43e97b); }
+.btn-gradient-warning:hover { background: linear-gradient(135deg, #f59e0b, #facc15); }
+.btn-gradient-danger:hover { background: linear-gradient(135deg, #b91c1c, #ef4444); }
+
+/* Shadows & hover */
+.shadow { box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.hover-glow:hover { transform: scale(1.02); transition: 0.3s ease-in-out; }
+
+/* Badges */
+.badge { font-weight:600; font-size:0.85rem; padding:0.45em 0.65em; border-radius:8px; }
+.badge.bg-success { background-color:#10b981 !important; }
+.badge.bg-warning { background-color:#f59e0b !important; }
+.badge.bg-danger { background-color:#ef4444 !important; }
+.badge.bg-info { background-color:#0ea5e9 !important; }
+.badge.bg-secondary { background-color:#6b7280 !important; }
+
+/* Card styling for table wrapper */
+.card { background: rgba(255,255,255,0.05); border-radius:12px; padding:1rem; }
+</style>
+{% endblock %}

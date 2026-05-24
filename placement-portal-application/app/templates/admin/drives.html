@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}All Drives - Admin{% endblock %}
+
+{% block content %}
+<!-- Full-page wrapper -->
+<div class="dashboard-bg">
+  <div class="container position-relative">
+
+    <!-- Page Heading -->
+    <h2 class="section-heading text-center mb-5">All Placement Drives</h2>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-gradient-secondary mb-4 shadow hover-glow text-white">
+      <i class="bi bi-arrow-left-circle me-2"></i> Back to Dashboard
+    </a>
+
+    {% if drives %}
+    <div class="table-responsive shadow rounded">
+      <table class="table table-hover align-middle mb-0 text-white">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Eligibility</th>
+            <th>Deadline</th>
+            <th>Status</th>
+            <th>Applications</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for drive in drives %}
+          <tr>
+            <td>{{ drive.drive_id }}</td>
+            <td>{{ drive.job_title }}</td>
+            <td>{{ drive.company.company_name if drive.company else 'N/A' }}</td>
+            <td>{{ drive.eligibility or 'N/A' }}</td>
+            <td>{{ drive.application_deadline.strftime('%Y-%m-%d') if drive.application_deadline else 'N/A' }}</td>
+            <td>
+              {% if drive.status == 'Pending' %}
+                <span class="badge bg-warning">Pending</span>
+              {% elif drive.status == 'Approved' %}
+                <span class="badge bg-success">Approved</span>
+              {% elif drive.status == 'Rejected' %}
+                <span class="badge bg-danger">Rejected</span>
+              {% elif drive.status == 'Closed' %}
+                <span class="badge bg-secondary">Closed</span>
+              {% else %}
+                <span class="badge bg-dark">{{ drive.status }}</span>
+              {% endif %}
+            </td>
+            <td>{{ drive.applications|length }}</td>
+            <td>
+              {% if drive.status == 'Pending' %}
+              <form action="{{ url_for('admin.approve_drive', drive_id=drive.drive_id) }}" method="POST" style="display:inline;">
+                <button class="btn btn-success btn-sm mb-1 shadow hover-glow">Approve</button>
+              </form>
+              <form action="{{ url_for('admin.reject_drive', drive_id=drive.drive_id) }}" method="POST" style="display:inline;">
+                <button class="btn btn-danger btn-sm mb-1 shadow hover-glow">Reject</button>
+              </form>
+              {% elif drive.status == 'Approved' %}
+              <form action="{{ url_for('admin.close_drive', drive_id=drive.drive_id) }}" method="POST" style="display:inline;">
+                <button class="btn btn-warning btn-sm mb-1 shadow hover-glow" onclick="return confirm('Close this drive?')">Close</button>
+              </form>
+              {% else %}
+              <span class="text-muted">Closed</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info shadow rounded">No placement drives found.</div>
+    {% endif %}
+
+  </div>
+</div>
+
+<style>
+/* Page background */
+.dashboard-bg { position: relative; z-index: 1; padding: 3rem 0; }
+html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+body {
+  background: radial-gradient(circle at top, #1f2937 0%, #111827 100%);
+  color: #f9fafb;
+}
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.15;
+  z-index: 0;
+}
+body::before { width: 600px; height: 600px; background: #667eea; top: 5%; left: -10%; }
+body::after { width: 700px; height: 700px; background: #43e97b; bottom: 5%; right: -15%; }
+
+/* Section headings */
+.section-heading { font-weight: 700; font-size: 2rem; color: #f9fafb; position: relative; margin-bottom: 2rem; text-align:center;}
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 60px; height: 4px;
+  background: linear-gradient(90deg, #667eea, #43e97b);
+  border-radius: 2px;
+  margin: 0.5rem auto 0 auto;
+}
+
+/* Buttons */
+.btn { border-radius: 8px; font-weight: 600; }
+.btn-gradient-secondary { background: linear-gradient(135deg, #6b7280, #9ca3af); color: #fff; }
+.btn-gradient-secondary:hover { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+
+/* Table styling */
+.table { color: #f9fafb; }
+.table-hover tbody tr:hover { background-color: rgba(255,255,255,0.08); }
+.table-dark thead th { background-color: rgba(0,0,0,0.7); }
+.table td, .table th { vertical-align: middle; }
+
+/* Buttons inside table */
+.btn-success, .btn-danger, .btn-warning { font-size: 0.8rem; }
+.shadow { box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.hover-glow:hover { transform: scale(1.02); transition: 0.3s ease-in-out; }
+.mb-1 { margin-bottom: 0.25rem; }
+</style>
+{% endblock %}

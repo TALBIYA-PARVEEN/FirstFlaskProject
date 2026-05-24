@@ -1,0 +1,236 @@
+openapi: 3.0.0
+info:
+  title: Placement Portal Application API
+  description: API documentation for the Flask-based Placement Portal Application.
+  version: 1.0.0
+
+paths:
+
+  /:
+    get:
+      summary: Home page
+      description: Displays the landing page with optional intro video.
+      responses:
+        "200":
+          description: Page loaded successfully
+
+  /login:
+    get:
+      summary: Login page
+      description: Displays login form
+    post:
+      summary: Authenticate user
+      description: Logs in a user with email and password
+
+  /logout:
+    get:
+      summary: Logout user
+      description: Ends user session
+
+  /student_register:
+    get:
+      summary: Student registration page
+    post:
+      summary: Register a new student
+
+  /company_register:
+    get:
+      summary: Company registration page
+    post:
+      summary: Register a new company
+
+  /login/get_google/{role}:
+    get:
+      summary: Google OAuth login
+      description: Redirects user to Google authentication
+      parameters:
+        - name: role
+          in: path
+          required: true
+          schema:
+            type: string
+
+  /login/google/callback:
+    get:
+      summary: Google OAuth callback
+      description: Handles Google login response
+
+  # ---------------- ADMIN ----------------
+
+  /admin/dashboard:
+    get:
+      summary: Admin dashboard
+
+  /admin/companies:
+    get:
+      summary: View all companies
+
+  /admin/companies/pending:
+    get:
+      summary: View companies awaiting approval
+
+  /admin/companies/{user_id}/approve:
+    post:
+      summary: Approve company registration
+
+  /admin/companies/{user_id}/reject:
+    post:
+      summary: Reject and delete company
+
+  /admin/companies/{user_id}/blacklist:
+    post:
+      summary: Toggle blacklist status for company
+
+  /admin/drives:
+    get:
+      summary: View all placement drives
+
+  /admin/drives/pending:
+    get:
+      summary: View pending drives
+
+  /admin/drives/{drive_id}/approve:
+    post:
+      summary: Approve placement drive
+
+  /admin/drives/{drive_id}/reject:
+    post:
+      summary: Reject and delete drive
+
+  /admin/drives/{drive_id}/close:
+    post:
+      summary: Close placement drive
+
+  /admin/students:
+    get:
+      summary: View all students
+
+  /admin/students/{user_id}/blacklist:
+    post:
+      summary: Toggle blacklist status for student
+
+  /admin/students/{user_id}:
+    get:
+      summary: View student details
+
+  /admin/companies/{user_id}:
+    get:
+      summary: View company details
+
+  /admin/statistics:
+    get:
+      summary: View platform statistics
+
+  /admin/applications:
+    get:
+      summary: View all applications
+
+  /admin/export/students:
+    get:
+      summary: Export students data as CSV
+
+  /admin/export_applications:
+    get:
+      summary: Export applications data as CSV
+
+  /admin/export_companies:
+    get:
+      summary: Export companies data as CSV
+
+
+  # ---------------- STUDENT ----------------
+
+  /student/dashboard:
+    get:
+      summary: Student dashboard
+
+  /student/profile:
+    get:
+      summary: View student profile
+
+  /student/profile/edit:
+    get:
+      summary: Edit student profile page
+    post:
+      summary: Update student profile
+
+  /student/profile/resume:
+    get:
+      summary: Download student resume
+
+  /student/profile/upload_resume:
+    post:
+      summary: Upload student resume
+
+  /student/drives:
+    get:
+      summary: View available placement drives
+
+  /student/drives/{drive_id}:
+    get:
+      summary: View placement drive details
+
+  /student/drives/{drive_id}/apply:
+    post:
+      summary: Apply for placement drive
+
+  /student/applications:
+    get:
+      summary: View student applications
+
+  /student/applications/{app_id}/withdraw:
+    post:
+      summary: Withdraw job application
+
+
+  # ---------------- COMPANY ----------------
+
+  /company/dashboard:
+    get:
+      summary: Company dashboard
+
+  /company/profile:
+    get:
+      summary: View company profile
+
+  /company/profile/edit:
+    get:
+      summary: Edit company profile page
+    post:
+      summary: Update company profile
+
+  /company/drives/create:
+    get:
+      summary: Create drive page
+    post:
+      summary: Create placement drive
+
+  /company/drives:
+    get:
+      summary: View company drives
+
+  /company/drives/{drive_id}/edit:
+    get:
+      summary: Edit drive page
+    post:
+      summary: Update drive details
+
+  /company/drives/{drive_id}/close:
+    post:
+      summary: Close drive
+
+  /company/drives/{drive_id}/reopen:
+    post:
+      summary: Reopen closed drive
+
+  /company/drives/{drive_id}/applications:
+    get:
+      summary: View applications for a drive
+
+  /company/resume/{student_id}:
+    get:
+      summary: Download student resume
+
+  /company/applications/{app_id}/update:
+    post:
+      summary: Update application status

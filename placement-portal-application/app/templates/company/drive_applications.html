@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %}Applications for {{ drive.job_title }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-bg">
+  <div class="container position-relative">
+
+    <!-- Page Heading -->
+    <h2 class="section-heading text-center mb-5">Applications for: {{ drive.job_title }}</h2>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('company.drives') }}" class="btn btn-gradient-secondary mb-4 shadow hover-glow text-white">
+      <i class="bi bi-arrow-left-circle me-2"></i> Back to My Drives
+    </a>
+
+    <!-- Drive Details Card -->
+    <div class="card shadow mb-4">
+      <div class="card-body">
+        <h5>Drive Details</h5>
+        <p><strong>Job Title:</strong> {{ drive.job_title }}</p>
+        <p><strong>Description:</strong> {{ drive.job_description[:100] }}{% if drive.job_description|length > 100 %}...{% endif %}</p>
+        <p><strong>Eligibility:</strong> {{ drive.eligibility or 'N/A' }}</p>
+        <p><strong>Deadline:</strong> {{ drive.application_deadline.strftime('%Y-%m-%d') if drive.application_deadline else 'N/A' }}</p>
+        <p><strong>Status:</strong>
+          {% set status_lower = drive.status.lower() %}
+          {% if status_lower == 'pending' %}
+            <span class="badge bg-warning">Pending</span>
+          {% elif status_lower == 'closed' %}
+            <span class="badge bg-secondary">Closed</span>
+          {% elif status_lower == 'active' %}
+            <span class="badge bg-success">Active</span>
+          {% else %}
+            <span class="badge bg-secondary">{{ drive.status }}</span>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <!-- Applications Table -->
+    {% if applications %}
+    <div class="table-responsive shadow rounded">
+      <table class="table table-hover align-middle mb-0 text-white">
+        <thead class="table-dark">
+          <tr>
+            <th>Student Name</th>
+            <th>Roll Number</th>
+            <th>Course</th>
+            <th>CGPA</th>
+            <th>Applied On</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in applications %}
+          {% set status = app.status.lower() %}
+          <tr>
+            <td>{{ app.student.full_name if app.student else 'N/A' }}</td>
+            <td>{{ app.student.roll_number if app.student else 'N/A' }}</td>
+            <td>{{ app.student.course if app.student else 'N/A' }}</td>
+            <td>{{ app.student.cgpa if app.student else 'N/A' }}</td>
+            <td>{{ app.application_date.strftime('%Y-%m-%d %H:%M') if app.application_date else 'N/A' }}</td>
+            <td>
+              {% if status == 'pending' %}
+              <span class="badge bg-warning">Pending</span>
+              {% elif status == 'shortlisted' %}
+              <span class="badge bg-info">Shortlisted</span>
+              {% elif status == 'selected' %}
+              <span class="badge bg-success">Selected</span>
+              {% elif status == 'rejected' %}
+              <span class="badge bg-danger">Rejected</span>
+              {% else %}
+              <span class="badge bg-secondary">{{ app.status }}</span>
+              {% endif %}
+            </td>
+            <td>
+              <form action="{{ url_for('company.update_application', app_id=app.application_id) }}" method="POST" style="display:inline;">
+                <select name="status" class="form-select form-select-sm d-inline-block" style="width:auto;">
+                  <option value="pending" {% if status=='pending' %}selected{% endif %}>Pending</option>
+                  <option value="shortlisted" {% if status=='shortlisted' %}selected{% endif %}>Shortlisted</option>
+                  <option value="selected" {% if status=='selected' %}selected{% endif %}>Selected</option>
+                  <option value="rejected" {% if status=='rejected' %}selected{% endif %}>Rejected</option>
+                </select>
+                <button type="submit" class="btn btn-gradient-primary btn-sm shadow hover-glow text-white">Update</button>
+              </form>
+              {% if app.student and app.student.resume_filename %}
+              <a href="{{ url_for('company.download_resume', student_id=app.student.user_id) }}" class="btn btn-gradient-secondary btn-sm shadow hover-glow text-white">Resume</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info shadow rounded">No applications received for this drive yet.</div>
+    {% endif %}
+
+  </div>
+</div>
+
+<style>
+/* Page background */
+.dashboard-bg { position: relative; z-index: 1; padding: 3rem 0; }
+html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+body {
+  background: radial-gradient(circle at top, #1f2937 0%, #111827 100%);
+  color: #f9fafb;
+}
+body::before,
+body::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.15;
+  z-index: 0;
+}
+body::before { width: 600px; height: 600px; background: #667eea; top: 5%; left: -10%; }
+body::after { width: 700px; height: 700px; background: #43e97b; bottom: 5%; right: -15%; }
+
+/* Section heading */
+.section-heading { font-weight: 700; font-size: 2rem; color: #f9fafb; position: relative; margin-bottom: 2rem; text-align:center;}
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 60px; height: 4px;
+  background: linear-gradient(90deg, #667eea, #43e97b);
+  border-radius: 2px;
+  margin: 0.5rem auto 0 auto;
+}
+
+/* Table styling */
+.table { color: #f9fafb; }
+.table-hover tbody tr:hover { background-color: rgba(255,255,255,0.08); }
+.table-dark thead th { background-color: rgba(0,0,0,0.7); }
+.table td, .table th { vertical-align: middle; }
+
+/* Buttons */
+.btn-gradient-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border:none; font-weight:600; }
+.btn-gradient-secondary { background: linear-gradient(135deg, #6b7280, #9ca3af); color: #fff; border:none; font-weight:600; }
+.btn-gradient-primary:hover { background: linear-gradient(135deg, #764ba2, #667eea); }
+.btn-gradient-secondary:hover { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+
+/* Shadows & hover */
+.shadow { box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.hover-glow:hover { transform: scale(1.02); transition: 0.3s ease-in-out; }
+
+/* Badges */
+.badge { font-weight:600; font-size:0.85rem; padding:0.45em 0.65em; border-radius:8px; }
+.badge.bg-success { background-color:#10b981 !important; }
+.badge.bg-warning { background-color:#f59e0b !important; }
+.badge.bg-danger { background-color:#ef4444 !important; }
+.badge.bg-info { background-color:#0ea5e9 !important; }
+.badge.bg-secondary { background-color:#6b7280 !important; }
+
+/* Card styling */
+.card { background: rgba(255,255,255,0.05); border-radius: 12px; color:#f9fafb; }
+.card-body { padding:1.5rem; }
+.card-header { background: rgba(0,0,0,0.3); color:#f9fafb; font-weight:600; }
+
+/* Form select inside table */
+.form-select {
+  background-color: #1f2937 !important;
+  color: #f9fafb !important;
+  border: 1px solid rgba(255,255,255,0.2);
+  height: 30px;
+}
+
+.form-select option {
+  background-color: #1f2937;
+  color: #ffffff;
+}
+</style>
+{% endblock %}

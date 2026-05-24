@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}Placement Statistics{% endblock %}
+
+{% block content %}
+<div class="dashboard-bg">
+  <div class="container position-relative">
+
+    <!-- Page Heading -->
+    <h2 class="section-heading text-center mb-5">Placement Statistics</h2>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-gradient-secondary mb-4 shadow hover-glow text-white">
+      <i class="bi bi-arrow-left-circle me-2"></i> Back to Dashboard
+    </a>
+
+    <!-- Overview Stats -->
+    <div class="row g-3 mb-4">
+      {% for stat in [
+        ('Students', stats.total_students, 'primary'),
+        ('Companies', stats.total_companies, 'info'),
+        ('Active Drives', stats.active_drives, 'success'),
+        ('Applications', stats.total_applications, 'warning'),
+        ('Selected', stats.selected, 'success'),
+        ('Success Rate', stats.success_rate ~ '%', 'secondary')
+      ] %}
+      <div class="col-md-2">
+        <div class="card text-bg-{{ stat[2] }} shadow-sm hover-glow">
+          <div class="card-body text-center">
+            <h6>{{ stat[0] }}</h6>
+            <span class="display-6">{{ stat[1] }}</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Application Status Breakdown -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card shadow-sm hover-glow">
+          <div class="card-header"><h5>Application Status Breakdown</h5></div>
+          <div class="card-body">
+            <table class="table table-dark table-striped">
+              {% for status, color in [('Pending', 'warning'), ('Shortlisted', 'info'), ('Selected', 'success'), ('Rejected', 'danger')] %}
+              <tr>
+                <td>{{ status }}</td>
+                <td><span class="badge bg-{{ color }}">{{ stats[status.lower()] }}</span></td>
+                <td>
+                  <div class="progress">
+                    <div class="progress-bar bg-{{ color }}" style="width: {{ (stats[status.lower()] / stats.total_applications * 100) if stats.total_applications > 0 else 0 }}%"></div>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card shadow-sm hover-glow">
+          <div class="card-header"><h5>Top Companies by Applications</h5></div>
+          <div class="card-body">
+            {% if top_companies %}
+            <table class="table table-dark table-sm table-striped">
+              <thead><tr><th>#</th><th>Company</th><th>Applications</th></tr></thead>
+              <tbody>
+                {% for company in top_companies %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ company.name }}</td>
+                  <td><span class="badge bg-primary">{{ company.count }}</span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">No application data available.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Department-wise Stats & Recent Admin Actions -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card shadow-sm hover-glow">
+          <div class="card-header"><h5>Department-wise Students</h5></div>
+          <div class="card-body">
+            {% if dept_stats %}
+            <table class="table table-dark table-sm table-striped">
+              <thead><tr><th>Department</th><th>Students</th><th>Applications</th><th>Selected</th></tr></thead>
+              <tbody>
+                {% for dept in dept_stats %}
+                <tr>
+                  <td>{{ dept.name }}</td>
+                  <td>{{ dept.students }}</td>
+                  <td>{{ dept.applications }}</td>
+                  <td><span class="badge bg-success">{{ dept.selected }}</span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">No department data available.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card shadow-sm hover-glow">
+          <div class="card-header"><h5>Recent Admin Actions</h5></div>
+          <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+            {% if recent_actions %}
+            <table class="table table-dark table-sm table-striped">
+              <thead><tr><th>Action</th><th>Target</th><th>Time</th></tr></thead>
+              <tbody>
+                {% for action in recent_actions %}
+                <tr>
+                  <td><span class="badge bg-secondary">{{ action.action_type }}</span></td>
+                  <td>{{ action.target_type }} #{{ action.target_id }}</td>
+                  <td>{{ action.timestamp.strftime('%d %b %H:%M') if action.timestamp else 'N/A' }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">No recent admin actions.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Export Section -->
+    <div class="card shadow-sm hover-glow mb-5">
+      <div class="card-header"><h5>Export Reports</h5></div>
+      <div class="card-body">
+        <a href="{{ url_for('admin.export_students') }}" class="btn btn-outline-primary hover-glow">Export Students CSV</a>
+        <a href="{{ url_for('admin.export_applications') }}" class="btn btn-outline-success hover-glow">Export Applications CSV</a>
+        <a href="{{ url_for('admin.export_companies') }}" class="btn btn-outline-info hover-glow">Export Companies CSV</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.dashboard-bg { position: relative; z-index: 1; padding: 3rem 0; }
+html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+body { background: radial-gradient(circle at top, #1f2937 0%, #111827 100%); color: #f9fafb; }
+body::before, body::after { content: ''; position: fixed; border-radius: 50%; filter: blur(150px); opacity: 0.15; z-index: 0; }
+body::before { width: 600px; height: 600px; background: #667eea; top: 5%; left: -10%; }
+body::after { width: 700px; height: 700px; background: #43e97b; bottom: 5%; right: -15%; }
+
+.section-heading { font-weight: 700; font-size: 2rem; color: #f9fafb; position: relative; margin-bottom: 2rem; text-align:center;}
+.section-heading::after { content: ''; display: block; width: 60px; height: 4px; background: linear-gradient(90deg, #667eea, #43e97b); border-radius: 2px; margin: 0.5rem auto 0 auto; }
+
+.card { border-radius: 0.8rem; }
+.shadow-sm { box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.hover-glow:hover { transform: scale(1.02); transition: 0.3s ease-in-out; }
+
+.table { color: #f9fafb; }
+.table-dark thead th { background-color: rgba(0,0,0,0.7); }
+.table-hover tbody tr:hover { background-color: rgba(255,255,255,0.08); }
+
+.btn-outline-primary, .btn-outline-success, .btn-outline-info { font-weight: 600; }
+</style>
+{% endblock %}

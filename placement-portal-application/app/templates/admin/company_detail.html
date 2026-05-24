@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block title %}Company Details{% endblock %}
+
+{% block content %}
+<div class="dashboard-bg">
+  <div class="container position-relative">
+
+    <!-- Page Heading -->
+    <h2 class="section-heading text-center mb-5">Company Details</h2>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('admin.companies') }}" class="btn btn-gradient-secondary mb-4 shadow hover-glow text-white">
+      <i class="bi bi-arrow-left-circle me-2"></i> Back to Companies
+    </a>
+
+    <div class="row">
+      <!-- Company Info -->
+      <div class="col-md-8">
+        <div class="card mb-3 shadow">
+          <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+            <h5>{{ company.company_name }}</h5>
+            <div>
+              {% if user.is_blacklisted %}
+                <span class="badge bg-danger">Blacklisted</span>
+              {% elif not user.is_approved %}
+                <span class="badge bg-warning">Pending Approval</span>
+              {% else %}
+                <span class="badge bg-success">Approved</span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="card-body bg-secondary text-white">
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>Industry:</strong> {{ company.industry or 'N/A' }}</p>
+                <p><strong>Location:</strong> {{ company.location or 'N/A' }}</p>
+                <p><strong>Website:</strong> 
+                  {% if company.website %}
+                    <a href="{{ company.website }}" target="_blank" class="text-info">{{ company.website }}</a>
+                  {% else %}
+                    N/A
+                  {% endif %}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Contact Person:</strong> {{ company.contact_person or 'N/A' }}</p>
+                <p><strong>Contact Phone:</strong> {{ company.contact_phone or 'N/A' }}</p>
+              </div>
+            </div>
+            <hr class="bg-light">
+            <p><strong>Description:</strong></p>
+            <p>{{ company.description or 'No description provided.' }}</p>
+            <p><strong>Registered:</strong> {{ user.created_at.strftime('%d %b %Y') if user.created_at else 'N/A' }}</p>
+          </div>
+          <div class="card-footer bg-dark">
+            {% if not user.is_approved %}
+            <form action="{{ url_for('admin.approve_company', user_id=user.user_id) }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-success btn-sm hover-glow">Approve Company</button>
+            </form>
+            <form action="{{ url_for('admin.reject_company', user_id=user.user_id) }}" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-danger btn-sm hover-glow" onclick="return confirm('Reject and delete this company?')">Reject</button>
+            </form>
+            {% else %}
+            <form action="{{ url_for('admin.blacklist_company', user_id=user.user_id) }}" method="POST" style="display:inline;">
+              {% if user.is_blacklisted %}
+              <button type="submit" class="btn btn-success btn-sm hover-glow" onclick="return confirm('Remove from blacklist?')">Remove from Blacklist</button>
+              {% else %}
+              <button type="submit" class="btn btn-danger btn-sm hover-glow" onclick="return confirm('Blacklist this company?')">Blacklist Company</button>
+              {% endif %}
+            </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Drive Stats -->
+      <div class="col-md-4">
+        <div class="card shadow">
+          <div class="card-header bg-dark text-white">
+            <h6>Drive Stats</h6>
+          </div>
+          <div class="card-body bg-secondary text-white">
+            <p><strong>Total Drives:</strong> {{ drives|length }}</p>
+            <p><strong>Active:</strong> <span class="badge bg-success">{{ drives|selectattr('is_active')|selectattr('is_approved')|list|length }}</span></p>
+            <p><strong>Pending Approval:</strong> <span class="badge bg-warning">{{ drives|rejectattr('is_approved')|list|length }}</span></p>
+            <p><strong>Closed:</strong> <span class="badge bg-secondary">{{ drives|rejectattr('is_active')|list|length }}</span></p>
+            <p><strong>Total Applications:</strong> {{ total_applications }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if drives %}
+    <div class="card mt-3 shadow">
+      <div class="card-header bg-dark text-white">
+        <h5>Placement Drives</h5>
+      </div>
+      <div class="card-body bg-secondary text-white">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0 text-white">
+            <thead class="table-dark">
+              <tr>
+                <th>Title</th>
+                <th>Job Type</th>
+                <th>Package</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Applications</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for drive in drives %}
+              <tr>
+                <td>{{ drive.title }}</td>
+                <td>{{ drive.job_type }}</td>
+                <td>{{ drive.package or 'N/A' }}</td>
+                <td>{{ drive.application_deadline.strftime('%d %b %Y') if drive.application_deadline else 'N/A' }}</td>
+                <td>
+                  {% if not drive.is_approved %}
+                    <span class="badge bg-warning">Pending</span>
+                  {% elif not drive.is_active %}
+                    <span class="badge bg-secondary">Closed</span>
+                  {% else %}
+                    <span class="badge bg-success">Active</span>
+                  {% endif %}
+                </td>
+                <td>{{ drive.applications|list|length }}</td>
+                <td>
+                  {% if not drive.is_approved %}
+                  <form action="{{ url_for('admin.approve_drive', drive_id=drive.user_id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-success btn-sm hover-glow">Approve</button>
+                  </form>
+                  {% elif drive.is_active %}
+                  <form action="{{ url_for('admin.close_drive', drive_id=drive.user_id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-warning btn-sm hover-glow">Close</button>
+                  </form>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<style>
+/* Page background */
+.dashboard-bg { position: relative; z-index: 1; padding: 3rem 0; }
+html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+body {
+  background: radial-gradient(circle at top, #1f2937 0%, #111827 100%);
+  color: #f9fafb;
+}
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.15;
+  z-index: 0;
+}
+body::before { width: 600px; height: 600px; background: #667eea; top: 5%; left: -10%; }
+body::after { width: 700px; height: 700px; background: #43e97b; bottom: 5%; right: -15%; }
+
+/* Section heading */
+.section-heading { font-weight: 700; font-size: 2rem; color: #f9fafb; position: relative; margin-bottom: 2rem; text-align:center;}
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 60px; height: 4px;
+  background: linear-gradient(90deg, #667eea, #43e97b);
+  border-radius: 2px;
+  margin: 0.5rem auto 0 auto;
+}
+
+/* Cards */
+.card { border-radius: 0.75rem; }
+
+/* Table styling */
+.table { color: #f9fafb; }
+.table-hover tbody tr:hover { background-color: rgba(255,255,255,0.08); }
+.table-dark thead th { background-color: rgba(0,0,0,0.7); }
+
+/* Buttons */
+.btn-gradient-secondary { background: linear-gradient(135deg, #6b7280, #9ca3af); color: #fff; }
+.btn-gradient-secondary:hover { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+.btn-danger:hover, .btn-success:hover, .btn-warning:hover { transform: scale(1.02); transition: 0.3s ease-in-out; }
+
+/* Badge spacing */
+.badge { font-size: 0.85rem; padding: 0.5em 0.75em; }
+</style>
+{% endblock %}

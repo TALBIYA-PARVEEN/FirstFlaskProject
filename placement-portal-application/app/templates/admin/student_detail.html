@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Details{% endblock %}
+
+{% block content %}
+<div class="dashboard-bg">
+  <div class="container position-relative">
+
+    <!-- Page Heading -->
+    <h2 class="section-heading text-center mb-5">Student Details</h2>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('admin.students') }}" class="btn btn-gradient-secondary mb-4 shadow hover-glow text-white">
+      <i class="bi bi-arrow-left-circle me-2"></i> Back to Students
+    </a>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card mb-3 shadow">
+          <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+            <h5>{{ student.full_name }}</h5>
+            {% if user.is_blacklisted %}
+              <span class="badge bg-danger">Blacklisted</span>
+            {% else %}
+              <span class="badge bg-success">Active</span>
+            {% endif %}
+          </div>
+          <div class="card-body bg-secondary text-white">
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+                <p><strong>Department:</strong> {{ student.department or 'N/A' }}</p>
+                <p><strong>Year:</strong> {{ student.year or 'N/A' }}</p>
+                <p><strong>CGPA:</strong> {{ student.cgpa or 'N/A' }}</p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Phone:</strong> {{ student.phone or 'N/A' }}</p>
+                <p><strong>10th Marks:</strong> {{ student.tenth_marks or 'N/A' }}%</p>
+                <p><strong>12th Marks:</strong> {{ student.twelfth_marks or 'N/A' }}%</p>
+              </div>
+            </div>
+            <hr class="bg-light">
+            <p><strong>Skills:</strong> {{ student.skills or 'Not specified' }}</p>
+            <p><strong>Address:</strong> {{ student.address or 'Not specified' }}</p>
+            <p><strong>Registered:</strong> {{ user.created_at.strftime('%d %b %Y') if user.created_at else 'N/A' }}</p>
+            
+            {% if student.resume_filename %}
+              <p><strong>Resume:</strong> <span class="badge bg-success">Uploaded</span></p>
+            {% else %}
+              <p><strong>Resume:</strong> <span class="badge bg-warning">Not uploaded</span></p>
+            {% endif %}
+          </div>
+          <div class="card-footer bg-dark">
+            <form action="{{ url_for('admin.blacklist_student', user_id=user.user_id) }}" method="POST" style="display:inline;">
+              {% if user.is_blacklisted %}
+              <button type="submit" class="btn btn-success btn-sm hover-glow" onclick="return confirm('Remove from blacklist?')">Remove from Blacklist</button>
+              {% else %}
+              <button type="submit" class="btn btn-danger btn-sm hover-glow" onclick="return confirm('Blacklist this student?')">Blacklist Student</button>
+              {% endif %}
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card shadow">
+          <div class="card-header bg-dark text-white">
+            <h6>Application Stats</h6>
+          </div>
+          <div class="card-body bg-secondary text-white">
+            <p><strong>Total Applications:</strong> {{ applications|length }}</p>
+            <p><strong>Pending:</strong> <span class="badge bg-warning">{{ applications|selectattr('status', 'equalto', 'pending')|list|length }}</span></p>
+            <p><strong>Shortlisted:</strong> <span class="badge bg-info">{{ applications|selectattr('status', 'equalto', 'shortlisted')|list|length }}</span></p>
+            <p><strong>Selected:</strong> <span class="badge bg-success">{{ applications|selectattr('status', 'equalto', 'selected')|list|length }}</span></p>
+            <p><strong>Rejected:</strong> <span class="badge bg-danger">{{ applications|selectattr('status', 'equalto', 'rejected')|list|length }}</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if applications %}
+    <div class="card mt-3 shadow">
+      <div class="card-header bg-dark text-white">
+        <h5>Application History</h5>
+      </div>
+      <div class="card-body bg-secondary text-white">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0 text-white">
+            <thead class="table-dark">
+              <tr>
+                <th>Drive</th>
+                <th>Company</th>
+                <th>Status</th>
+                <th>Applied On</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for app in applications %}
+              <tr>
+                <td>{{ app.drive.title if app.drive else 'N/A' }}</td>
+                <td>{{ app.drive.company.company_name if app.drive and app.drive.company else 'N/A' }}</td>
+                <td>
+                  {% set status_colors = {
+                    'selected':'success', 'shortlisted':'info', 'pending':'warning', 'rejected':'danger'
+                  } %}
+                  <span class="badge bg-{{ status_colors.get(app.status, 'secondary') }}">
+                    {{ app.status|capitalize }}
+                  </span>
+                </td>
+                <td>{{ app.applied_at.strftime('%d %b %Y') if app.applied_at else 'N/A' }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<style>
+/* Page background */
+.dashboard-bg { position: relative; z-index: 1; padding: 3rem 0; }
+html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+body {
+  background: radial-gradient(circle at top, #1f2937 0%, #111827 100%);
+  color: #f9fafb;
+}
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.15;
+  z-index: 0;
+}
+body::before { width: 600px; height: 600px; background: #667eea; top: 5%; left: -10%; }
+body::after { width: 700px; height: 700px; background: #43e97b; bottom: 5%; right: -15%; }
+
+/* Section heading */
+.section-heading { font-weight: 700; font-size: 2rem; color: #f9fafb; position: relative; margin-bottom: 2rem; text-align:center;}
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 60px; height: 4px;
+  background: linear-gradient(90deg, #667eea, #43e97b);
+  border-radius: 2px;
+  margin: 0.5rem auto 0 auto;
+}
+
+/* Cards */
+.card { border-radius: 0.75rem; }
+
+/* Table styling */
+.table { color: #f9fafb; }
+.table-hover tbody tr:hover { background-color: rgba(255,255,255,0.08); }
+.table-dark thead th { background-color: rgba(0,0,0,0.7); }
+
+/* Buttons */
+.btn-gradient-secondary { background: linear-gradient(135deg, #6b7280, #9ca3af); color: #fff; }
+.btn-gradient-secondary:hover { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+.btn-danger:hover, .btn-success:hover { transform: scale(1.02); transition: 0.3s ease-in-out; }
+
+/* Badge spacing */
+.badge { font-size: 0.85rem; padding: 0.5em 0.75em; }
+</style>
+{% endblock %}
